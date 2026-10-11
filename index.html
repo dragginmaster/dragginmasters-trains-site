@@ -733,6 +733,7 @@ function loadComps(isRefresh){
     });
 }
 document.getElementById("countLine").textContent = "Loading comps\u2026";
+bootGuide(); // attaches trend-modal + filter listeners (table fills in when data arrives)
 loadComps(false);
 (function(){
   var btn=document.getElementById("refreshBtn");
