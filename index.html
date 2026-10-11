@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dragginmasters Trains — Model Train Price Guide</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16202e">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dragginmasters">
+<style>
+  :root{
+    --navy:#16202e;
+    --navy2:#1f2c40;
+    --ink:#2b2620;
+    --paper:#faf7f1;
+    --card:#ffffff;
+    --line:#e3dccd;
+    --red:#b3402e;
+    --gold:#c9962b;
+    --green:#2e7d43;
+    --muted:#6f675c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.55;
+  }
+  header.topbar{background:var(--navy);color:#fff;padding:18px 20px 0;}
+  .wordmark{font-weight:800;letter-spacing:2px;font-size:clamp(20px,4vw,30px);}
+  .wordmark .sub{display:block;font-weight:400;letter-spacing:4px;font-size:11px;color:var(--gold);margin-top:2px;}
+  .toprow{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .sharebtn{background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;font:inherit;font-weight:600;font-size:14px;padding:8px 14px;border-radius:8px;cursor:pointer;white-space:nowrap;}
+  .sharebtn:hover{background:rgba(255,255,255,.12);}
+  .sharebtn.ok{border-color:var(--gold);color:var(--gold);}
+  nav.tabs{display:flex;gap:4px;margin-top:14px;flex-wrap:wrap;}
+  nav.tabs button{
+    background:transparent;border:none;color:#cfd6e2;font:inherit;font-weight:600;
+    padding:10px 16px;cursor:pointer;border-bottom:3px solid transparent;font-size:15px;
+  }
+  nav.tabs button:hover{color:#fff;}
+  nav.tabs button.active{color:#fff;border-bottom-color:var(--gold);}
+  main{max-width:1080px;margin:0 auto;padding:26px 18px 60px;}
+  section.page{display:none;}
+  section.page.active{display:block;}
+  h1{font-size:clamp(26px,5vw,40px);line-height:1.15;margin-bottom:10px;}
+  h2{font-size:22px;margin:26px 0 10px;}
+  h3{font-size:17px;margin:0 0 6px;}
+  p.lede{font-size:18px;color:#3d3830;max-width:640px;margin-bottom:18px;}
+  .hero{background:var(--navy2);color:#fff;border-radius:10px;padding:34px 28px;margin-bottom:22px;}
+  .hero h1{color:#fff;}
+  .hero p{color:#d8dde6;max-width:640px;font-size:17px;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:18px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;cursor:pointer;transition:transform .08s ease, box-shadow .08s ease;}
+  .card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(22,32,46,.12);}
+  a.card{display:block;text-decoration:none;color:inherit;}
+  .card h3{color:var(--navy);}
+  .card p{font-size:14px;color:var(--muted);}
+  .card .go{color:var(--red);font-weight:700;font-size:14px;margin-top:8px;display:inline-block;}
+  .note{background:#fff8e8;border:1px solid #ecd9a0;border-radius:8px;padding:12px 16px;font-size:14px;margin:18px 0;}
+  /* filters */
+  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0;}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;}
+  .seg button{border:none;background:transparent;padding:8px 16px;font:inherit;font-weight:600;cursor:pointer;color:var(--muted);}
+  .seg button.active{background:var(--navy);color:#fff;}
+  .filters select,.filters input[type="search"]{
+    font:inherit;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);
+  }
+  .filters input[type="search"]{min-width:200px;flex:1;max-width:320px;}
+  .count{font-size:13px;color:var(--muted);margin:6px 0 10px;}
+  /* trend column + modal */
+  .tfract{font:inherit;font-size:13px;font-weight:700;color:var(--muted);background:none;border:none;padding:4px 2px;white-space:nowrap;}
+  button.tfract{color:var(--green);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  button.tfract:hover{color:var(--navy);}
+  .tmodal{position:fixed;inset:0;background:rgba(22,32,46,.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:60;}
+  .tmodal[hidden]{display:none;}
+  .tmodal .box{background:var(--card);border-radius:12px;max-width:430px;width:100%;padding:20px;position:relative;}
+  .tmodal h3{color:var(--navy);font-size:16px;margin-bottom:6px;padding-right:28px;}
+  .tmodal .tchart svg{display:block;width:100%;height:auto;margin:6px 0;}
+  .tmodal .tstat{color:var(--green);font-weight:600;font-size:14px;}
+  .tmodal .tsales{margin-top:10px;max-height:160px;overflow:auto;font-size:13px;border-top:1px solid var(--line);padding-top:8px;}
+  .tmodal .tsales .srow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;}
+  .tmodal .tsales .srow .rd{color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tmodal .gate{font-size:14px;margin:10px 0;line-height:1.5;}
+  .tmodal .tclose{position:absolute;top:8px;right:10px;border:none;background:none;font-size:20px;cursor:pointer;color:var(--muted);padding:4px 8px;}
+  /* table */
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff;}
+  table{border-collapse:collapse;width:100%;min-width:880px;font-size:14px;}
+  thead th{
+    background:var(--navy);color:#fff;text-align:left;padding:10px 12px;white-space:nowrap;
+    cursor:pointer;user-select:none;font-size:13px;letter-spacing:.3px;
+  }
+  thead th .arrow{color:var(--gold);font-size:11px;margin-left:4px;}
+  thead th.nosort{cursor:default;}
+  tbody td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top;}
+  tbody tr:nth-child(even){background:#f6f2e9;}
+  tbody tr:hover{background:#f0e9d6;}
+  .modelname{font-weight:700;color:var(--navy);}
+  .stale{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--red);border:1px solid var(--red);border-radius:4px;padding:2px 7px;margin-top:4px;white-space:nowrap;}
+  .price{font-weight:800;white-space:nowrap;}
+  .subnote{font-size:12px;color:var(--muted);}
+  a.elink{color:var(--red);font-weight:600;white-space:nowrap;}
+  a.elink:hover{text-decoration:underline;}
+  .proof{
+    border:2px dashed #b9ac93;border-radius:6px;background:#f4efe2;color:#8a7f68;
+    font-size:11px;text-align:center;padding:14px 8px;min-width:110px;line-height:1.4;
+  }
+  .proof .glyph{font-size:20px;display:block;margin-bottom:4px;}
+  img.proofimg{max-width:130px;border-radius:6px;border:1px solid var(--line);display:block;}
+  /* buy page */
+  .buy-hero{background:var(--navy2);color:#fff;border-radius:10px;padding:30px 26px;margin-bottom:20px;}
+  .buy-hero h1{color:#fff;}
+  .buy-hero p{color:#d8dde6;}
+  ul.buy-list{margin:8px 0 8px 20px;}
+  ul.buy-list li{margin-bottom:6px;}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0 22px;}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;}
+  .step .num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;font-weight:800;margin-bottom:8px;}
+  .contactbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-top:16px;}
+  .contactbox label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px;}
+  .contactbox input,.contactbox textarea{width:100%;font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fbfaf7;color:var(--ink);}
+  .contactbox textarea{min-height:90px;resize:vertical;}
+  .contactbox button{margin-top:14px;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:11px 22px;font:inherit;font-weight:700;cursor:not-allowed;opacity:.55;}
+  .placeholder-flag{display:inline-block;background:#fff3c4;border:1px solid var(--gold);color:#7a5c12;font-size:12px;font-weight:700;border-radius:6px;padding:4px 10px;margin-bottom:6px;}
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:18px;text-align:center;font-size:13px;color:var(--muted);}
+  @media (max-width:640px){
+    main{padding:18px 12px 50px;}
+    .hero,.buy-hero{padding:24px 18px;}
+    thead th,tbody td{padding:8px 9px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <div class="wordmark">DRAGGINMASTERS TRAINS<span class="sub">MODEL TRAIN PRICE GUIDE</span></div>
+    <button class="sharebtn" id="refreshBtn" type="button">⟳ Refresh</button>
+    <button class="sharebtn" id="shareBtn" type="button">⤴ Share</button>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="active" data-tab="home" role="tab">Home</button>
+    <button data-tab="guide" role="tab">Price Guide</button>
+    <button data-tab="identify" role="tab">Identify</button>
+    <button data-tab="sell" role="tab">Sell Your Collection</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ HOME ============ -->
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <h1>Know what it's worth.</h1>
+      <p>A free price guide for N &amp; HO model trains, built on real sold prices with archived proof for every comp. And if you're sitting on a collection you want to sell, I'll point you to honest buyers.</p>
+    </div>
+    <div class="cards">
+      <div class="card" data-goto="guide">
+        <h3>Price Guide</h3>
+        <p>Real sold listings: model, brand, road name, condition, price, and date — every one backed by an archived screenshot so the proof never rots.</p>
+        <span class="go">Browse the comps &rarr;</span>
+      </div>
+      <div class="card" data-goto="identify">
+        <h3>Identify a Train</h3>
+        <p>No box? Work out the make, model, and manufacturer with the step-by-step ID guide — including how to tell apart the makers that built the same unit.</p>
+        <span class="go">Start identifying &rarr;</span>
+      </div>
+      <div class="card" data-goto="sell">
+        <h3>Sell Your Collection</h3>
+        <p>I don't buy collections myself yet — so here's the next best thing: vetted cash buyers, ways to sell it yourself, and how to ID what you've got first.</p>
+        <span class="go">Where to sell &rarr;</span>
+      </div>
+      <a class="card" href="https://www.amazon.com/dp/B0HNF6RSRV" target="_blank" rel="noopener">
+        <h3>Buy My Book</h3>
+        <p><strong>The Hobby That Pays for Itself, Book 1: A Primer on Flipping Model Trains.</strong> The full how-to behind this price guide — finding the deals, running the numbers, and making the hobby pay for itself. $12.99 paperback, $4.99 Kindle.</p>
+        <span class="go">Get it on Amazon &rarr;</span>
+      </a>
+    </div>
+    <div class="note"><strong>How the comps work:</strong> every row links the actual sold auction and keeps a screenshot of the listing on file. Comps older than 90 days are flagged STALE. Fresh comps are added regularly — check back often.</div>
+  </section>
+
+  <!-- ============ PRICE GUIDE ============ -->
+  <section class="page" id="page-guide">
+    <h1>Price Guide</h1>
+    <p class="lede">Real sold prices for N &amp; HO model trains. Every comp links the sold auction and carries an archived screenshot as proof.</p>
+
+    <div class="filters">
+      <div class="seg" id="scaleSeg">
+        <button class="active" data-scale="All">All</button>
+        <button data-scale="N">N</button>
+        <button data-scale="HO">HO</button>
+      </div>
+      <select id="brandFilter"><option value="All">All brands</option></select>
+      <select id="controlFilter"><option value="All">All control types</option></select>
+      <select id="typeFilter">
+        <option value="All">Diesel &amp; steam</option>
+        <option value="Diesel">Diesel only</option>
+        <option value="Steam">Steam only</option>
+      </select>
+      <input type="search" id="searchBox" placeholder="Search model, brand, road name…">
+    </div>
+    <div class="count" id="countLine"></div>
+
+    <h2>All comps</h2>
+    <div class="tablewrap">
+      <table id="compTable">
+        <thead><tr id="headRow"></tr></thead>
+        <tbody id="bodyRows"></tbody>
+      </table>
+    </div>
+    <div class="note" style="margin-top:16px;"><strong>STALE</strong> means the sale is more than 90 days old — useful as history, but check fresher comps before pricing anything.</div>
+  </section>
+
+  <!-- trend chart modal (no charts live up top; the column is the access point) -->
+  <div class="tmodal" id="trendModal" hidden>
+    <div class="box" role="dialog" aria-modal="true" aria-labelledby="trendModalTitle">
+      <button class="tclose" id="trendModalClose" aria-label="Close">✕</button>
+      <h3 id="trendModalTitle"></h3>
+      <div class="tchart" id="trendModalChart"></div>
+      <div class="tstat" id="trendModalStat"></div>
+      <div class="tsales" id="trendModalSales"></div>
+      <div class="gate" id="trendModalGate" hidden></div>
+    </div>
+  </div>
+
+  <!-- ============ I BUY COLLECTIONS ============ -->
+  <!-- ============ IDENTIFY ============ -->
+  <section class="page" id="page-identify">
+    <div class="buy-hero">
+      <h1>Identify Your Train</h1>
+      <p>No box? No problem. Here's how to pin down the make, model, and manufacturer of a mystery piece.</p>
+    </div>
+
+    <h2>1. Photograph it — including the bottom</h2>
+    <p>Top, both sides, and the underside. You'll need the bottom shot. That's where the answer usually lives.</p>
+
+    <h2>2. Google Lens the side profile</h2>
+    <p>This solves a lot of cases outright — Lens will usually name the prototype, like an EMD F7 or a 4-6-2 Pacific. But here's the catch: <strong>several manufacturers made the same units</strong>, and a photo of the shell can't always tell a Kato from a Model Power. That's what the rest of this page is for.</p>
+
+    <h2>3. Flip it over and read the underside</h2>
+    <p>Look for a brand name, country of origin, or catalog number molded or stamped into the fuel tank, frame, or truck sideframes. Most of the time, this ends the mystery right here.</p>
+
+    <h2>4. Match the manufacturer tells</h2>
+    <p>Same shell, different maker — here's how to tell them apart. Markings vary by era, so treat these as "look for," not gospel.</p>
+    <div class="tablewrap">
+    <table>
+      <thead><tr>
+        <th class="nosort">Scale</th><th class="nosort">Manufacturer</th><th class="nosort">What to look for</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>N</td><td class="modelname">Kato</td><td>"KATO" stamped on the fuel tank underside or chassis; often "Made in Japan." Blackened metal wheels and crisp printing. Note: Atlas N from the 80s–90s often runs on Kato mechanisms — check for KATO stamps under an Atlas shell.</td></tr>
+        <tr><td>N</td><td class="modelname">Micro-Trains</td><td>"Micro-Trains" or "Made in U.S.A." on the underside; distinctive operating knuckle couplers.</td></tr>
+        <tr><td>N</td><td class="modelname">Bachmann</td><td>Brand name on the underside; modern production usually marked "Made in China."</td></tr>
+        <tr><td>N</td><td class="modelname">Model Power</td><td>Often Italian-made (Rivarossi heritage); older tooling, simpler detail, shells frequently unmarked.</td></tr>
+        <tr><td>N</td><td class="modelname">Minitrix / Arnold / Fleischmann / Roco</td><td>European makers — look for "Made in Germany" or "Made in Austria."</td></tr>
+        <tr><td>HO</td><td class="modelname">Athearn</td><td>"Athearn" stamps on the frame; older blue-box era often "Made in U.S.A." Blue-box diesels have 4 holes in the fuel tank for the motor mounts — a dead giveaway even when the stamps are worn off.</td></tr>
+        <tr><td>HO</td><td class="modelname">Walthers / Life-Like (Proto)</td><td>"Walthers," "Life-Like," or "Proto 2000" markings on the chassis.</td></tr>
+        <tr><td>HO</td><td class="modelname">Bachmann</td><td>Same as N — brand name on the underside.</td></tr>
+        <tr><td>HO</td><td class="modelname">Broadway Limited</td><td>"Broadway Limited" or "BLI" branding, usually on the chassis.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>5. No markings at all?</h2>
+    <ul class="buy-list">
+      <li><strong>Couplers:</strong> the big Rapido loop means older or budget N scale; working knuckle couplers mean newer or upgraded.</li>
+      <li><strong>Wheels:</strong> blackened metal wheels point to quality makers; shiny or plastic wheels point to budget lines.</li>
+      <li><strong>Pop the shell:</strong> usually one screw. The chassis and motor are often stamped even when the shell isn't.</li>
+      <li><strong>Weight:</strong> a die-cast metal chassis usually means an older premium mechanism; all-plastic often means budget.</li>
+    </ul>
+
+    <h2>6. Still stuck?</h2>
+    <p>Search the road name plus the road number plus the wheel arrangement — e.g. "Santa Fe 2341 4-axle diesel N scale." Road numbers are often specific enough to nail it.</p>
+
+    <div class="note"><strong>Why this matters for value:</strong> the manufacturer sets the tier — a Kato F7 and a Model Power F7 are different money. Once you've got the make, look it up in the Price Guide tab.</div>
+  </section>
+
+  <section class="page" id="page-sell">
+    <div class="buy-hero">
+      <h1>Sell Your Model Train Collection</h1>
+      <p>Straight talk on where to sell — including buyers I'd send my own family to.</p>
+    </div>
+
+    <p>Hi! And welcome to Dragginmasters trains. I buy, sell and repair model trains, but I'll be straight with you: <strong>I don't buy collections myself right now.</strong> I don't have the capital yet, and I'd rather tell you that up front than waste your time. So here's the next best thing: an honest list of people who do buy, and how to get the most for what you've got.</p>
+
+    <h2>First: know what you're selling</h2>
+    <p>Five minutes here is worth real money. The <strong>Identify</strong> tab walks you through pinning down the make, model, and manufacturer of any piece, and the <strong>Price Guide</strong> shows what things actually sell for. Walk into any deal informed — including deals with the buyers below.</p>
+
+    <h2>Buyers who pay cash for collections</h2>
+    <div class="tablewrap">
+    <table>
+      <thead><tr>
+        <th class="nosort">Buyer</th><th class="nosort">Best for</th><th class="nosort">How it works</th><th class="nosort">Link</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="modelname">Trainz</td><td>Any scale, whole collections</td><td>Cash offer up front, or consignment — they sell each piece and pay you as items sell. Consignment pays more but takes longer.</td><td><a class="elink" href="https://SellMyTrains.com/" target="_blank" rel="noopener">SellMyTrains.com ↗</a></td></tr>
+        <tr><td class="modelname">Sell My Train Collection</td><td>N scale, $100 minimum</td><td>N scale specialty — Kato, Atlas, Micro-Trains. Send photos, get a written cash offer within 48 hours.</td><td><a class="elink" href="https://sellmytraincollection.com/" target="_blank" rel="noopener">sellmytraincollection.com ↗</a></td></tr>
+        <tr><td class="modelname">ReSourced Rails</td><td>Any scale, any size</td><td>Single pieces to thousand-piece lots. Donates 5% of profits to rail preservation.</td><td><a class="elink" href="https://resourcedrails.com/" target="_blank" rel="noopener">resourcedrails.com ↗</a></td></tr>
+        <tr><td class="modelname">The Lionel Train Store (NJ)</td><td>Lionel, MTH, HO, N — any condition</td><td>Buys single pieces, estates, and collections. Also buys older toys.</td><td><a class="elink" href="https://www.thelioneltrainstorenj.com/sell-us-your-trains-toys/" target="_blank" rel="noopener">Sell page ↗</a></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Sell it yourself: more money, more work</h2>
+    <ul class="buy-list">
+      <li><strong>eBay</strong> — the best return for most collections, sold piece by piece. Slow, and you're doing the photos, listings, and shipping.</li>
+      <li><strong>Facebook Marketplace / Craigslist</strong> — good for local, no shipping. Expect hagglers; works best for smaller lots.</li>
+      <li><strong>Train shows &amp; swap meets</strong> — rent a table and sell direct. The <a class="elink" href="https://dupagecountyfair.org/event/great-midwest-train-show-2026/2026-01-04/" target="_blank" rel="noopener">Great Midwest Train Show</a> in Wheaton, IL runs monthly with 300+ tables.</li>
+      <li><strong>Local hobby shops</strong> — ask about consignment or outright purchase. Even if they don't buy, dealers usually know who does.</li>
+    </ul>
+
+    <div class="note"><strong>Set expectations:</strong> dealers buy wholesale — they have to resell for a profit, so cash offers come in under retail. That's normal, not a scam. Selling piece by piece yourself almost always nets more; selling to a dealer is faster and zero hassle. Pick your poison.</div>
+
+    <div class="note"><strong>Don't take my word for it.</strong> Verify anything on this page with your own research — ID your pieces with the <strong>Identify</strong> tab and check values in the <strong>Price Guide</strong> before selling to anyone, including the buyers listed here. I'd rather deal with an informed seller than a suspicious one.</div>
+
+    <p style="color:var(--muted);font-size:14px;">I'm building toward buying collections myself down the road. When that day comes, this page will say so.</p>
+  </section>
+</main>
+
+<footer>Live prototype — growing daily. Comps harvested from real eBay sold listings.<br><a href="draggin-feedback.html" style="color:var(--red);font-weight:600;">Got a gripe or an idea? Send feedback →</a></footer>
+
+<script>
+/* ---------------- Comp data ----------------
+   Comps now live in a separate free data repo — the site fetches them at
+   load, so adding comps never costs a Netlify deploy. Harvest jobs update
+   comps.json + shots/ in the data repo; this page just reads it.
+   "control" is one of: DC, DCC-ready, DCC, DCC+Sound. */
+const DATA_URL = "https://cdn.jsdelivr.net/gh/dragginmaster/dragginmasters-comps-data@main/comps.json";
+const SHOTS_BASE = "https://cdn.jsdelivr.net/gh/dragginmaster/dragginmasters-comps-data@main/shots/";
+let COMPS = [];
+
+/* ---------------- Tabs ---------------- */
+document.querySelectorAll("nav.tabs button").forEach(btn=>{
+  btn.addEventListener("click",()=>goTab(btn.dataset.tab));
+});
+document.querySelectorAll("[data-goto]").forEach(el=>{
+  el.addEventListener("click",()=>goTab(el.dataset.goto));
+});
+function goTab(name){
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active", b.dataset.tab===name));
+  document.querySelectorAll("section.page").forEach(s=>s.classList.toggle("active", s.id==="page-"+name));
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ---------------- Helpers ---------------- */
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDate(iso){
+  const [y,m,d]=iso.split("-").map(Number);
+  return MONTHS[m-1]+" "+d+", "+y;
+}
+function money(n){ return "$"+n.toFixed(2); }
+function daysAgo(iso){
+  const then=new Date(iso+"T12:00:00");
+  const now=new Date();
+  return Math.floor((now-then)/86400000);
+}
+function isStale(iso){ return daysAgo(iso) > 90; }
+/* ---------------- Trends ----------------
+   FREE FOR EVERY VISITOR right now. When traffic builds, flip TRENDS_PAID to
+   true and wire checkPaidUser() to Netlify Identity: paid means the user's
+   app_metadata.roles includes "paid" (assigned server-side via Stripe webhook
+   after payment — users can never grant it to themselves).
+   Launch offer: current users get a special rate for
+   a limited time when the paid tier goes live. */
+const TRENDS_PAID = false;
+function checkPaidUser(){
+  // TODO(paid launch): return !!(window.netlifyIdentity &&
+  //   window.netlifyIdentity.currentUser() &&
+  //   (window.netlifyIdentity.currentUser().app_metadata.roles||[]).indexOf("paid") !== -1);
+  return true;
+}
+function canViewTrends(){ return !TRENDS_PAID || checkPaidUser(); }
+
+/* Trend grouping is by model, not road name: a Santa Fe GP35 and a UP GP35
+   are the same item for pricing. Grouping by road name would mean no trend
+   ever reaches 5 sales. */
+function trendKey(c){ return c.brand+"|"+c.model+"|"+c.scale+"|"+c.control; }
+function trendName(c){ return c.brand+" "+c.model+" ("+c.control+") — "+c.scale+" scale"; }
+function buildTrendGroups(){
+  const groups={};
+  COMPS.forEach(c=>{ const k=trendKey(c); (groups[k]=groups[k]||[]).push(c); });
+  return groups;
+}
+function trendChartSVG(rows){
+  const w=260, h=96, pl=36, pr=10, pt=8, pb=16;
+  const prices=rows.map(function(r){ return r.price; });
+  const lo=Math.min.apply(null,prices), hi=Math.max.apply(null,prices), span=(hi-lo)||1;
+  const avg=prices.reduce(function(a,b){ return a+b; },0)/prices.length;
+  const X=function(i){ return pl+(w-pl-pr)*(rows.length===1?0.5:i/(rows.length-1)); };
+  const Y=function(v){ return pt+(h-pt-pb)*(1-(v-lo)/span); };
+  let s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Price trend chart">';
+  s+='<line x1="'+pl+'" y1="'+Y(avg).toFixed(1)+'" x2="'+(w-pr)+'" y2="'+Y(avg).toFixed(1)
+    +'" stroke="#b9ac93" stroke-width="1" stroke-dasharray="4 3"/>';
+  const pts=rows.map(function(r,i){ return X(i).toFixed(1)+","+Y(r.price).toFixed(1); }).join(" ");
+  s+='<polyline points="'+pts+'" fill="none" stroke="#2e7d43" stroke-width="2"/>';
+  rows.forEach(function(r,i){
+    s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(r.price).toFixed(1)+'" r="3.5" fill="#2e7d43">'
+      +'<title>'+money(r.price)+' — '+fmtDate(r.date)+' — '+esc(r.road)+'</title></circle>';
+  });
+  s+='<text x="'+(pl-5)+'" y="'+(Y(hi)+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a7f68">'+money(hi)+'</text>';
+  s+='<text x="'+(pl-5)+'" y="'+(Y(lo)+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a7f68">'+money(lo)+'</text>';
+  s+='</svg>';
+  return s;
+}
+function openTrendModal(key){
+  const groups=buildTrendGroups();
+  const rows=(groups[key]||[]).slice().sort(function(a,b){ return a.date<b.date?-1:1; });
+  if(!rows.length) return;
+  const modal=document.getElementById("trendModal");
+  document.getElementById("trendModalTitle").textContent=trendName(rows[0]);
+  const chartEl=document.getElementById("trendModalChart");
+  const statEl=document.getElementById("trendModalStat");
+  const salesEl=document.getElementById("trendModalSales");
+  const gateEl=document.getElementById("trendModalGate");
+  if(canViewTrends()){
+    const prices=rows.map(function(r){ return r.price; });
+    const avg=prices.reduce(function(a,b){ return a+b; },0)/prices.length;
+    const lo=Math.min.apply(null,prices), hi=Math.max.apply(null,prices);
+    chartEl.innerHTML=trendChartSVG(rows);
+    chartEl.hidden=false;
+    statEl.textContent=rows.length+" sales — avg "+money(avg)+", range "+money(lo)+"–"+money(hi);
+    statEl.hidden=false;
+    salesEl.innerHTML=rows.map(function(r){
+      return '<div class="srow"><span>'+esc(fmtDate(r.date))+'</span>'
+        +'<span class="rd">'+esc(r.road)+'</span>'
+        +'<span><strong>'+money(r.price)+'</strong></span></div>';
+    }).join("");
+    salesEl.hidden=false;
+    gateEl.hidden=true;
+  }else{
+    chartEl.hidden=true;
+    statEl.hidden=true;
+    salesEl.hidden=true;
+    gateEl.hidden=false;
+    gateEl.innerHTML="Price trends are a <strong>premium feature</strong>. Log in with your paid account to see this chart.";
+  }
+  modal.hidden=false;
+}
+function closeTrendModal(){ document.getElementById("trendModal").hidden=true; }
+
+/* ---------------- Table ---------------- */
+const COLS=[
+  {key:"model", label:"Model"},
+  {key:"brand", label:"Brand"},
+  {key:"scale", label:"Scale"},
+  {key:"road", label:"Road name"},
+  {key:"control", label:"Control"},
+  {key:"condition", label:"Condition"},
+  {key:"price", label:"Sold price"},
+  {key:"trend", label:"Trend", sort:false},
+  {key:"date", label:"Sold date"},
+  {key:"url", label:"eBay link", sort:false},
+  {key:"proof", label:"Proof", sort:false}
+];
+let sortKey="date", sortDir=-1; // newest first
+let scaleFilter="All", brandFilter="All", controlFilter="All", typeFilter="All", searchQ="";
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+/* Steam vs diesel: steam models carry a wheel arrangement (4-8-4, 2-8-0…)
+   and/or a steam-type keyword in the model name. */
+function isSteam(c){
+  const m=(c.model||"").toLowerCase();
+  if(/\b\d-\d+-\d\b/.test(m)) return true;
+  return /(mikado|pacific|consolidation|decapod|ten-wheeler|hudson|northern|berkshire|challenger|big boy|mogul|switcher|shay|heisler|climax)/.test(m);
+}
+
+function renderHead(){
+  const tr=document.getElementById("headRow");
+  tr.innerHTML="";
+  COLS.forEach(c=>{
+    const th=document.createElement("th");
+    th.textContent=c.label;
+    if(c.sort===false){ th.classList.add("nosort"); }
+    else{
+      if(c.key===sortKey){
+        const sp=document.createElement("span");
+        sp.className="arrow";
+        sp.textContent=sortDir===1?" ▲":" ▼";
+        th.appendChild(sp);
+      }
+      th.addEventListener("click",()=>{
+        if(sortKey===c.key){ sortDir*=-1; }
+        else{ sortKey=c.key; sortDir=(c.key==="date"||c.key==="price")?-1:1; }
+        renderHead(); renderBody();
+      });
+    }
+    tr.appendChild(th);
+  });
+}
+
+function filtered(){
+  const q=searchQ.trim().toLowerCase();
+  return COMPS.filter(c=>{
+    if(scaleFilter!=="All" && c.scale!==scaleFilter) return false;
+    if(brandFilter!=="All" && c.brand!==brandFilter) return false;
+    if(controlFilter!=="All" && c.control!==controlFilter) return false;
+    if(typeFilter==="Diesel" && isSteam(c)) return false;
+    if(typeFilter==="Steam" && !isSteam(c)) return false;
+    if(q){
+      const hay=(c.model+" "+c.brand+" "+c.road+" "+c.control+" "+c.condition).toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    return true;
+  });
+}
+
+function proofPlaceholder(){
+  const pv=document.createElement("div");
+  pv.className="proof";
+  pv.innerHTML='<span class="glyph">◦</span><span>archived screenshot</span>';
+  return pv;
+}
+
+function renderBody(){
+  const tgroups=buildTrendGroups(); // global counts, not affected by filters
+  const rows=filtered().slice();
+  rows.sort((a,b)=>{
+    let va=a[sortKey], vb=b[sortKey];
+    if(typeof va==="string"){ va=va.toLowerCase(); vb=String(vb).toLowerCase(); }
+    if(va<vb) return -1*sortDir;
+    if(va>vb) return 1*sortDir;
+    return 0;
+  });
+  const tb=document.getElementById("bodyRows");
+  tb.innerHTML="";
+  rows.forEach(c=>{
+    const tr=document.createElement("tr");
+
+    const tdModel=document.createElement("td");
+    const mspan=document.createElement("span");
+    mspan.className="modelname";
+    mspan.textContent=c.model;
+    tdModel.appendChild(mspan);
+    tr.appendChild(tdModel);
+
+    ["brand","scale","road","control","condition"].forEach(k=>{
+      const td=document.createElement("td");
+      td.textContent=c[k];
+      tr.appendChild(td);
+    });
+
+    const tdPrice=document.createElement("td");
+    tdPrice.innerHTML='<span class="price"></span>'+(c.note?'<div class="subnote"></div>':"");
+    tdPrice.querySelector(".price").textContent=money(c.price);
+    if(c.note) tdPrice.querySelector(".subnote").textContent=c.note;
+    tr.appendChild(tdPrice);
+
+    const tdTrend=document.createElement("td");
+    const gk=trendKey(c);
+    const gn=(tgroups[gk]||[]).length;
+    if(gn>=5){
+      const tb2=document.createElement("button");
+      tb2.className="tfract";
+      tb2.dataset.tkey=gk;
+      tb2.title="View price trend — "+gn+" sales";
+      tb2.textContent=gn+"/5";
+      tdTrend.appendChild(tb2);
+    }else{
+      const ts=document.createElement("span");
+      ts.className="tfract";
+      ts.title="Price trend unlocks at 5 sales";
+      ts.textContent=gn+"/5";
+      tdTrend.appendChild(ts);
+    }
+    tr.appendChild(tdTrend);
+
+    const tdDate=document.createElement("td");
+    tdDate.textContent=fmtDate(c.date);
+    if(isStale(c.date)){
+      const b=document.createElement("span");
+      b.className="stale"; b.textContent="STALE — 90+ days";
+      tdDate.appendChild(document.createElement("br"));
+      tdDate.appendChild(b);
+    }
+    tr.appendChild(tdDate);
+
+    const tdLink=document.createElement("td");
+    const a=document.createElement("a");
+    a.className="elink"; a.href=c.url; a.target="_blank"; a.rel="noopener";
+    a.textContent="View sold listing ↗";
+    tdLink.appendChild(a);
+    tr.appendChild(tdLink);
+
+    const tdProof=document.createElement("td");
+    const img=document.createElement("img");
+    img.className="proofimg";
+    img.src=SHOTS_BASE+c.ebayId+".jpg";
+    img.alt="Sold listing screenshot — tap to enlarge";
+    img.title="Tap to view full-size";
+    img.style.cursor="zoom-in";
+    img.onerror=function(){ this.replaceWith(proofPlaceholder()); };
+    img.onclick=function(){ window.open(this.currentSrc,"_blank","noopener"); };
+    tdProof.appendChild(img);
+    tr.appendChild(tdProof);
+
+    tb.appendChild(tr);
+  });
+  document.getElementById("countLine").textContent =
+    "Showing "+rows.length+" of "+COMPS.length+" comps";
+}
+
+/* ---------------- Filters ---------------- */
+document.querySelectorAll("#scaleSeg button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll("#scaleSeg button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    scaleFilter=b.dataset.scale;
+    renderBody();
+  });
+});
+var _brandsAdded={};
+function fillBrands(){
+  const sel=document.getElementById("brandFilter");
+  [...new Set(COMPS.map(c=>c.brand))].sort().forEach(br=>{
+    if(_brandsAdded[br]) return;
+    _brandsAdded[br]=1;
+    const o=document.createElement("option");
+    o.value=br; o.textContent=br;
+    sel.appendChild(o);
+  });
+}
+document.getElementById("brandFilter").addEventListener("change",e=>{ brandFilter=e.target.value; renderBody(); });
+(function fillControls(){
+  const sel=document.getElementById("controlFilter");
+  ["DC","DCC-ready","DCC","DCC+Sound"].forEach(ct=>{
+    const o=document.createElement("option");
+    o.value=ct; o.textContent=ct;
+    sel.appendChild(o);
+  });
+  sel.addEventListener("change",()=>{ controlFilter=sel.value; renderBody(); });
+})();
+document.getElementById("typeFilter").addEventListener("change",e=>{ typeFilter=e.target.value; renderBody(); });
+document.getElementById("searchBox").addEventListener("input",e=>{
+  searchQ=e.target.value; renderBody();
+});
+
+function bootGuide(){
+  renderHead(); renderBody(); fillBrands();
+  document.getElementById("trendModalClose").addEventListener("click", closeTrendModal);
+  document.getElementById("trendModal").addEventListener("click", function(e){
+    if(e.target===this) closeTrendModal();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape") closeTrendModal();
+  });
+  // trend column buttons are re-rendered with the table, so delegate the clicks
+  document.getElementById("bodyRows").addEventListener("click", function(e){
+    const b=e.target && e.target.closest ? e.target.closest("button.tfract") : null;
+    if(b && b.dataset.tkey) openTrendModal(b.dataset.tkey);
+  });
+}
+/* Refresh: re-fetch comps.json (network-first through the service worker,
+   cache-busted so the browser can't serve a stale copy) and re-render.
+   Fixes the installed-PWA case where the app resumes suspended without
+   reloading data -- no more uninstall/reinstall to see new comps. */
+var lastLoadAt=0;
+function loadComps(isRefresh){
+  var btn=document.getElementById("refreshBtn");
+  if(isRefresh && btn){ btn.disabled=true; btn.textContent="\u27f3 \u2026"; }
+  return fetch(DATA_URL,{cache:"reload"})
+    .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
+    .then(function(d){
+      COMPS=d.comps||d;
+      lastLoadAt=Date.now();
+      renderHead(); renderBody(); fillBrands();
+      if(isRefresh && btn){
+        btn.textContent="\u2713 Fresh"; btn.classList.add("ok");
+        setTimeout(function(){ btn.textContent="\u27f3 Refresh"; btn.classList.remove("ok"); btn.disabled=false; },2000);
+      }
+    })
+    .catch(function(){
+      if(isRefresh && btn){
+        btn.textContent="\u27f3 Offline \u2014 kept last data";
+        setTimeout(function(){ btn.textContent="\u27f3 Refresh"; btn.disabled=false; },2500);
+      }else{
+        document.getElementById("countLine").textContent =
+          "Couldn't load the price data \u2014 check your connection and reload. (Offline? Open the guide once with signal and it caches for later.)";
+      }
+    });
+}
+document.getElementById("countLine").textContent = "Loading comps\u2026";
+loadComps(false);
+(function(){
+  var btn=document.getElementById("refreshBtn");
+  if(btn) btn.addEventListener("click",function(){ loadComps(true); });
+  /* Auto-refresh when the app comes back after being away a while --
+     covers the suspended-PWA resume case without needing a tap. */
+  document.addEventListener("visibilitychange",function(){
+    if(!document.hidden && Date.now()-lastLoadAt>30*60*1000) loadComps(true);
+  });
+})();
+</script>
+<script>
+/* Share button: native share sheet where available, clipboard fallback. */
+(function(){
+  var btn=document.getElementById("shareBtn");
+  if(!btn) return;
+  var data={
+    title:"Dragginmasters Trains — Model Train Price Guide",
+    text:"Free model-train sold-listing price guide — install it on your phone, works offline at shows.",
+    url:"https://dragginmasters-trains.netlify.app/"
+  };
+  btn.addEventListener("click",function(){
+    if(navigator.share){
+      navigator.share(data).catch(function(){});
+      return;
+    }
+    function done(){
+      var old=btn.textContent;
+      btn.textContent="Link copied ✓"; btn.classList.add("ok");
+      setTimeout(function(){ btn.textContent=old; btn.classList.remove("ok"); },2000);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(data.url).then(done,function(){ prompt("Copy this link:",data.url); });
+    }else{
+      prompt("Copy this link:",data.url);
+    }
+  });
+})();
+</script>
+<script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",function(){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
