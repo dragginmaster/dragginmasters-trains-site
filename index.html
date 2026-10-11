@@ -86,6 +86,10 @@
   .tmodal .tlegend .lrow{display:flex;align-items:center;gap:8px;padding:2px 0;}
   .tmodal .tlegend .dot{width:10px;height:10px;border-radius:50%;flex:none;}
   .tmodal .tlegend .n{margin-left:auto;color:var(--muted);white-space:nowrap;}
+  .tmodal .tlegend .cur{color:var(--muted);font-size:11.5px;}
+  .tmodal .tlegend button.lrow{width:100%;background:none;border:none;font:inherit;color:inherit;cursor:pointer;text-align:left;border-radius:6px;padding:3px 4px;margin:0 -4px;}
+  .tmodal .tlegend button.lrow:hover{background:#f0e9d6;}
+  .tmodal .tlegend button.lrow:hover span:first-of-type+span{text-decoration:underline;text-underline-offset:3px;}
   .tmodal .tstat{color:var(--green);font-weight:600;font-size:14px;}
   .tmodal .tsales{margin-top:10px;max-height:160px;overflow:auto;font-size:13px;border-top:1px solid var(--line);padding-top:8px;}
   .tmodal .tsales .srow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;}
@@ -489,9 +493,11 @@ function openTrendModal(key){
         const col=TREND_COLORS[si%TREND_COLORS.length];
         const sp=sr.rows.map(function(r){ return r.price; });
         const savg=sp.reduce(function(a,b){ return a+b; },0)/sp.length;
-        return '<div class="lrow"><span class="dot" style="background:'+col+'"></span>'
-          +'<span>'+esc(sr.label)+(sr.main?" (this chart)":"")+'</span>'
-          +'<span class="n">'+sr.rows.length+' sale'+(sr.rows.length>1?"s":"")+' · avg '+money(savg)+'</span></div>';
+        const inner='<span class="dot" style="background:'+col+'"></span>'
+          +'<span>'+esc(sr.label)+'</span>'
+          +'<span class="n">'+sr.rows.length+' sale'+(sr.rows.length>1?"s":"")+' · avg '+money(savg)+'</span>';
+        if(sr.main) return '<div class="lrow">'+inner+'<span class="cur">(this chart)</span></div>';
+        return '<button class="lrow lbtn" data-lkey="'+esc(sr.key)+'" title="Switch to this trend">'+inner+'</button>';
       }).join("");
       legendEl.hidden=false;
     }else{
@@ -761,6 +767,11 @@ function bootGuide(){
   document.getElementById("bodyRows").addEventListener("click", function(e){
     const b=e.target && e.target.closest ? e.target.closest("button.tfract") : null;
     if(b && b.dataset.tkey) openTrendModal(b.dataset.tkey);
+  });
+  // legend rows inside the trend modal switch the chart to that sibling tier
+  document.getElementById("trendModalLegend").addEventListener("click", function(e){
+    const b=e.target && e.target.closest ? e.target.closest("button.lbtn") : null;
+    if(b && b.dataset.lkey) openTrendModal(b.dataset.lkey);
   });
 }
 /* Refresh: re-fetch comps.json (network-first through the service worker,

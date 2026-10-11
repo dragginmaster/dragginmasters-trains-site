@@ -4,7 +4,7 @@
    shows with no signal.
    comps.json is NETWORK-FIRST: fresh data whenever there's a connection,
    last-cached copy when offline. */
-const CACHE = "dragginmasters-v4"; // bump on every deploy or installed apps never get the new shell
+const CACHE = "dragginmasters-v5"; // bump on every deploy or installed apps never get the new shell
 const SHELL = [
   "./",
   "index.html",
