@@ -358,8 +358,8 @@
    load, so adding comps never costs a Netlify deploy. Harvest jobs update
    comps.json + shots/ in the data repo; this page just reads it.
    "control" is one of: DC, DCC-ready, DCC, DCC+Sound. */
-const DATA_URL = "https://cdn.jsdelivr.net/gh/dragginmaster/dragginmasters-comps-data@main/comps.json";
-const SHOTS_BASE = "https://cdn.jsdelivr.net/gh/dragginmaster/dragginmasters-comps-data@main/shots/";
+const DATA_URL = "https://raw.githubusercontent.com/dragginmaster/dragginmasters-comps-data/main/comps.json";
+const SHOTS_BASE = "https://raw.githubusercontent.com/dragginmaster/dragginmasters-comps-data/main/shots/";
 let COMPS = [];
 
 /* ---------------- Tabs ---------------- */
