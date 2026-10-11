@@ -81,6 +81,11 @@
   .tmodal .box{background:var(--card);border-radius:12px;max-width:430px;width:100%;padding:20px;position:relative;}
   .tmodal h3{color:var(--navy);font-size:16px;margin-bottom:6px;padding-right:28px;}
   .tmodal .tchart svg{display:block;width:100%;height:auto;margin:6px 0;}
+  .tmodal .tsub{color:var(--muted);font-size:13px;margin:0 0 2px;}
+  .tmodal .tlegend{margin:6px 0 4px;font-size:12.5px;}
+  .tmodal .tlegend .lrow{display:flex;align-items:center;gap:8px;padding:2px 0;}
+  .tmodal .tlegend .dot{width:10px;height:10px;border-radius:50%;flex:none;}
+  .tmodal .tlegend .n{margin-left:auto;color:var(--muted);white-space:nowrap;}
   .tmodal .tstat{color:var(--green);font-weight:600;font-size:14px;}
   .tmodal .tsales{margin-top:10px;max-height:160px;overflow:auto;font-size:13px;border-top:1px solid var(--line);padding-top:8px;}
   .tmodal .tsales .srow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;}
@@ -215,7 +220,9 @@
     <div class="box" role="dialog" aria-modal="true" aria-labelledby="trendModalTitle">
       <button class="tclose" id="trendModalClose" aria-label="Close">✕</button>
       <h3 id="trendModalTitle"></h3>
+      <div class="tsub" id="trendModalSub" hidden></div>
       <div class="tchart" id="trendModalChart"></div>
+      <div class="tlegend" id="trendModalLegend" hidden></div>
       <div class="tstat" id="trendModalStat"></div>
       <div class="tsales" id="trendModalSales"></div>
       <div class="gate" id="trendModalGate" hidden></div>
@@ -403,21 +410,54 @@ function buildTrendGroups(){
   COMPS.forEach(c=>{ const k=trendKey(c); (groups[k]=groups[k]||[]).push(c); });
   return groups;
 }
-function trendChartSVG(rows){
-  const w=260, h=96, pl=36, pr=10, pt=8, pb=16;
-  const prices=rows.map(function(r){ return r.price; });
-  const lo=Math.min.apply(null,prices), hi=Math.max.apply(null,prices), span=(hi-lo)||1;
-  const avg=prices.reduce(function(a,b){ return a+b; },0)/prices.length;
-  const X=function(i){ return pl+(w-pl-pr)*(rows.length===1?0.5:i/(rows.length-1)); };
-  const Y=function(v){ return pt+(h-pt-pb)*(1-(v-lo)/span); };
-  let s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Price trend chart">';
-  s+='<line x1="'+pl+'" y1="'+Y(avg).toFixed(1)+'" x2="'+(w-pr)+'" y2="'+Y(avg).toFixed(1)
+/* Trend comparison: same model + scale, any brand/control, gets its own line.
+   The tapped tier is always first (green); siblings get the palette below. */
+var TREND_COLORS=["#2e7d43","#1f6feb","#b3541e","#7c3aed","#a07c00","#0e7c7b","#c2185b","#5a6b7c"];
+function siblingSeries(key){
+  var groups=buildTrendGroups();
+  var main=groups[key]||[];
+  if(!main.length) return [];
+  var mk=main[0].model+"|"+main[0].scale;
+  var out=[];
+  Object.keys(groups).forEach(function(k){
+    var rows=groups[k];
+    if(!rows.length) return;
+    if(rows[0].model+"|"+rows[0].scale!==mk) return;
+    out.push({key:k, main:(k===key), label:rows[0].brand+" · "+rows[0].control,
+      rows:rows.slice().sort(function(a,b){ return a.date<b.date?-1:1; })});
+  });
+  out.sort(function(a,b){ return a.main?-1:(b.main?1:0); });
+  return out;
+}
+function trendCompareSVG(series){
+  var w=260, h=104, pl=36, pr=10, pt=8, pb=16;
+  var all=[];
+  series.forEach(function(s){ s.rows.forEach(function(r){ all.push(r); }); });
+  var prices=all.map(function(r){ return r.price; });
+  var lo=Math.min.apply(null,prices), hi=Math.max.apply(null,prices), span=(hi-lo)||1;
+  var times=all.map(function(r){ return new Date(r.date+"T12:00:00").getTime(); });
+  var t0=Math.min.apply(null,times), t1=Math.max.apply(null,times), tspan=(t1-t0)||1;
+  var X=function(t){ return pl+(w-pl-pr)*(tspan===1?0.5:(t-t0)/tspan); };
+  var Y=function(v){ return pt+(h-pt-pb)*(1-(v-lo)/span); };
+  var s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Price trend comparison chart">';
+  /* dashed average line for the tapped tier only */
+  var main=series[0];
+  var mp=main.rows.map(function(r){ return r.price; });
+  var mavg=mp.reduce(function(a,b){ return a+b; },0)/mp.length;
+  s+='<line x1="'+pl+'" y1="'+Y(mavg).toFixed(1)+'" x2="'+(w-pr)+'" y2="'+Y(mavg).toFixed(1)
     +'" stroke="#b9ac93" stroke-width="1" stroke-dasharray="4 3"/>';
-  const pts=rows.map(function(r,i){ return X(i).toFixed(1)+","+Y(r.price).toFixed(1); }).join(" ");
-  s+='<polyline points="'+pts+'" fill="none" stroke="#2e7d43" stroke-width="2"/>';
-  rows.forEach(function(r,i){
-    s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(r.price).toFixed(1)+'" r="3.5" fill="#2e7d43">'
-      +'<title>'+money(r.price)+' — '+fmtDate(r.date)+' — '+esc(r.road)+'</title></circle>';
+  series.forEach(function(sr,si){
+    var col=TREND_COLORS[si%TREND_COLORS.length];
+    var pts=sr.rows.map(function(r){
+      return X(new Date(r.date+"T12:00:00").getTime()).toFixed(1)+","+Y(r.price).toFixed(1);
+    }).join(" ");
+    if(sr.rows.length>1)
+      s+='<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="'+(sr.main?2.5:1.75)+'"/>';
+    sr.rows.forEach(function(r){
+      var cx=X(new Date(r.date+"T12:00:00").getTime()).toFixed(1), cy=Y(r.price).toFixed(1);
+      s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(sr.main?3.5:3)+'" fill="'+col+'">'
+        +'<title>'+esc(sr.label)+' — '+money(r.price)+' — '+fmtDate(r.date)+' — '+esc(r.road)+'</title></circle>';
+    });
   });
   s+='<text x="'+(pl-5)+'" y="'+(Y(hi)+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a7f68">'+money(hi)+'</text>';
   s+='<text x="'+(pl-5)+'" y="'+(Y(lo)+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a7f68">'+money(lo)+'</text>';
@@ -425,12 +465,14 @@ function trendChartSVG(rows){
   return s;
 }
 function openTrendModal(key){
-  const groups=buildTrendGroups();
-  const rows=(groups[key]||[]).slice().sort(function(a,b){ return a.date<b.date?-1:1; });
-  if(!rows.length) return;
+  const series=siblingSeries(key);
+  if(!series.length) return;
+  const rows=series[0].rows;
   const modal=document.getElementById("trendModal");
   document.getElementById("trendModalTitle").textContent=trendName(rows[0]);
+  const subEl=document.getElementById("trendModalSub");
   const chartEl=document.getElementById("trendModalChart");
+  const legendEl=document.getElementById("trendModalLegend");
   const statEl=document.getElementById("trendModalStat");
   const salesEl=document.getElementById("trendModalSales");
   const gateEl=document.getElementById("trendModalGate");
@@ -438,8 +480,24 @@ function openTrendModal(key){
     const prices=rows.map(function(r){ return r.price; });
     const avg=prices.reduce(function(a,b){ return a+b; },0)/prices.length;
     const lo=Math.min.apply(null,prices), hi=Math.max.apply(null,prices);
-    chartEl.innerHTML=trendChartSVG(rows);
+    chartEl.innerHTML=trendCompareSVG(series);
     chartEl.hidden=false;
+    if(series.length>1){
+      subEl.textContent="Compared with "+(series.length-1)+" similar tier"+(series.length>2?"s":"")+" — same model and scale.";
+      subEl.hidden=false;
+      legendEl.innerHTML=series.map(function(sr,si){
+        const col=TREND_COLORS[si%TREND_COLORS.length];
+        const sp=sr.rows.map(function(r){ return r.price; });
+        const savg=sp.reduce(function(a,b){ return a+b; },0)/sp.length;
+        return '<div class="lrow"><span class="dot" style="background:'+col+'"></span>'
+          +'<span>'+esc(sr.label)+(sr.main?" (this chart)":"")+'</span>'
+          +'<span class="n">'+sr.rows.length+' sale'+(sr.rows.length>1?"s":"")+' · avg '+money(savg)+'</span></div>';
+      }).join("");
+      legendEl.hidden=false;
+    }else{
+      subEl.hidden=true;
+      legendEl.hidden=true;
+    }
     statEl.textContent=rows.length+" sales — avg "+money(avg)+", range "+money(lo)+"–"+money(hi);
     statEl.hidden=false;
     salesEl.innerHTML=rows.map(function(r){
@@ -451,6 +509,8 @@ function openTrendModal(key){
     gateEl.hidden=true;
   }else{
     chartEl.hidden=true;
+    subEl.hidden=true;
+    legendEl.hidden=true;
     statEl.hidden=true;
     salesEl.hidden=true;
     gateEl.hidden=false;
