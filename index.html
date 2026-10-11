@@ -609,37 +609,68 @@ document.querySelectorAll("#scaleSeg button").forEach(b=>{
     document.querySelectorAll("#scaleSeg button").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
     scaleFilter=b.dataset.scale;
-    renderBody();
+    refreshFilterOptions(); renderBody();
   });
 });
-var _brandsAdded={};
-function fillBrands(){
-  const sel=document.getElementById("brandFilter");
-  [...new Set(COMPS.map(c=>c.brand))].sort().forEach(br=>{
-    if(_brandsAdded[br]) return;
-    _brandsAdded[br]=1;
-    const o=document.createElement("option");
-    o.value=br; o.textContent=br;
-    sel.appendChild(o);
+/* Cascading filters: each dropdown only lists values that exist in the comps
+   matching the OTHER active filters, so dead-end combos never appear. A
+   selection that stops being valid is quietly reset to All. */
+function distinctFor(exclude){
+  const q=searchQ.trim().toLowerCase();
+  return COMPS.filter(c=>{
+    if(exclude!=="scale" && scaleFilter!=="All" && c.scale!==scaleFilter) return false;
+    if(exclude!=="brand" && brandFilter!=="All" && c.brand!==brandFilter) return false;
+    if(exclude!=="control" && controlFilter!=="All" && c.control!==controlFilter) return false;
+    if(exclude!=="type"){
+      if(typeFilter==="Diesel" && isSteam(c)) return false;
+      if(typeFilter==="Steam" && !isSteam(c)) return false;
+    }
+    if(exclude!=="search" && q){
+      const hay=(c.model+" "+c.brand+" "+c.road+" "+c.control+" "+c.condition).toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    return true;
   });
 }
-document.getElementById("brandFilter").addEventListener("change",e=>{ brandFilter=e.target.value; renderBody(); });
-(function fillControls(){
-  const sel=document.getElementById("controlFilter");
-  ["DC","DCC-ready","DCC","DCC+Sound"].forEach(ct=>{
+var CONTROL_ORDER=["DC","DCC-ready","DCC","DCC+Sound"];
+function refreshFilterOptions(){
+  // reset any selection that no longer exists under the other filters (fixpoint)
+  for(let i=0;i<4;i++){
+    const brands=[...new Set(distinctFor("brand").map(c=>c.brand))];
+    const ctrls=CONTROL_ORDER.filter(ct=>distinctFor("control").some(c=>c.control===ct));
+    let ok=true;
+    if(brandFilter!=="All" && brands.indexOf(brandFilter)===-1){ brandFilter="All"; ok=false; }
+    if(controlFilter!=="All" && ctrls.indexOf(controlFilter)===-1){ controlFilter="All"; ok=false; }
+    if(ok) break;
+  }
+  const brands=[...new Set(distinctFor("brand").map(c=>c.brand))].sort();
+  const bsel=document.getElementById("brandFilter");
+  bsel.innerHTML='<option value="All">All brands</option>';
+  brands.forEach(br=>{
+    const o=document.createElement("option");
+    o.value=br; o.textContent=br;
+    bsel.appendChild(o);
+  });
+  bsel.value=brandFilter;
+  const ctrls=CONTROL_ORDER.filter(ct=>distinctFor("control").some(c=>c.control===ct));
+  const csel=document.getElementById("controlFilter");
+  csel.innerHTML='<option value="All">All control types</option>';
+  ctrls.forEach(ct=>{
     const o=document.createElement("option");
     o.value=ct; o.textContent=ct;
-    sel.appendChild(o);
+    csel.appendChild(o);
   });
-  sel.addEventListener("change",()=>{ controlFilter=sel.value; renderBody(); });
-})();
-document.getElementById("typeFilter").addEventListener("change",e=>{ typeFilter=e.target.value; renderBody(); });
+  csel.value=controlFilter;
+}
+document.getElementById("brandFilter").addEventListener("change",e=>{ brandFilter=e.target.value; refreshFilterOptions(); renderBody(); });
+document.getElementById("controlFilter").addEventListener("change",e=>{ controlFilter=e.target.value; refreshFilterOptions(); renderBody(); });
+document.getElementById("typeFilter").addEventListener("change",e=>{ typeFilter=e.target.value; refreshFilterOptions(); renderBody(); });
 document.getElementById("searchBox").addEventListener("input",e=>{
-  searchQ=e.target.value; renderBody();
+  searchQ=e.target.value; refreshFilterOptions(); renderBody();
 });
 
 function bootGuide(){
-  renderHead(); renderBody(); fillBrands();
+  renderHead(); renderBody(); refreshFilterOptions();
   document.getElementById("trendModalClose").addEventListener("click", closeTrendModal);
   document.getElementById("trendModal").addEventListener("click", function(e){
     if(e.target===this) closeTrendModal();
@@ -666,7 +697,7 @@ function loadComps(isRefresh){
     .then(function(d){
       COMPS=d.comps||d;
       lastLoadAt=Date.now();
-      renderHead(); renderBody(); fillBrands();
+      renderHead(); renderBody(); refreshFilterOptions();
       if(isRefresh && btn){
         btn.textContent="\u2713 Fresh"; btn.classList.add("ok");
         setTimeout(function(){ btn.textContent="\u27f3 Refresh"; btn.classList.remove("ok"); btn.disabled=false; },2000);
