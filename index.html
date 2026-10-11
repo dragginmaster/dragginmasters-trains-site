@@ -450,16 +450,22 @@ function trendCompareSVG(series){
   var mavg=mp.reduce(function(a,b){ return a+b; },0)/mp.length;
   s+='<line x1="'+pl+'" y1="'+Y(mavg).toFixed(1)+'" x2="'+(w-pr)+'" y2="'+Y(mavg).toFixed(1)
     +'" stroke="#b9ac93" stroke-width="1" stroke-dasharray="4 3"/>';
-  series.forEach(function(sr,si){
+  /* siblings first, tapped tier last so it always sits on top; white halo
+     keeps it readable where lines cross */
+  var ordered=series.slice(1).concat([series[0]]);
+  ordered.forEach(function(sr){
+    var si=series.indexOf(sr);
     var col=TREND_COLORS[si%TREND_COLORS.length];
     var pts=sr.rows.map(function(r){
       return X(new Date(r.date+"T12:00:00").getTime()).toFixed(1)+","+Y(r.price).toFixed(1);
     }).join(" ");
-    if(sr.rows.length>1)
-      s+='<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="'+(sr.main?2.5:1.75)+'"/>';
+    if(sr.rows.length>1){
+      if(sr.main) s+='<polyline points="'+pts+'" fill="none" stroke="#ffffff" stroke-width="6" opacity="0.9"/>';
+      s+='<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="'+(sr.main?3:2)+'"/>';
+    }
     sr.rows.forEach(function(r){
       var cx=X(new Date(r.date+"T12:00:00").getTime()).toFixed(1), cy=Y(r.price).toFixed(1);
-      s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(sr.main?3.5:3)+'" fill="'+col+'">'
+      s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(sr.main?4:3)+'" fill="'+col+'" stroke="#ffffff" stroke-width="'+(sr.main?1.75:1)+'">'
         +'<title>'+esc(sr.label)+' — '+money(r.price)+' — '+fmtDate(r.date)+' — '+esc(r.road)+'</title></circle>';
     });
   });
