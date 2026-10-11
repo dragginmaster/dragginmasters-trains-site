@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit a Comp — Dragginmasters Trains</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16202e">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>
+  :root{--navy:#16202e;--paper:#faf7f1;--line:#e3dccd;--red:#b3402e;--gold:#c9962b;--muted:#6f675c;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--paper);color:#2b2620;line-height:1.55;padding:24px 18px 60px;max-width:640px;margin:0 auto;}
+  h1{font-size:26px;margin-bottom:6px;}
+  p.lede{color:#3d3830;margin-bottom:18px;}
+  .note{background:#fff8e8;border:1px solid #ecd9a0;border-radius:8px;padding:12px 16px;font-size:14px;margin-bottom:20px;}
+  label{display:block;font-weight:700;margin:16px 0 6px;}
+  input[type="url"],input[type="text"],select,textarea{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#2b2620;}
+  textarea{min-height:90px;resize:vertical;}
+  .hint{font-size:13px;color:var(--muted);margin-top:4px;}
+  button{background:var(--red);color:#fff;border:none;font:inherit;font-weight:700;padding:12px 28px;border-radius:8px;cursor:pointer;margin-top:22px;font-size:16px;}
+  button:hover{filter:brightness(1.08);}
+  .back{display:inline-block;margin-top:26px;color:var(--navy);font-weight:600;}
+  .hidden{position:absolute;left:-9999px;}
+</style>
+</head>
+<body>
+<h1>Submit a comp</h1>
+<p class="lede">Found a sold listing that belongs in the price guide? Paste it here.</p>
+<div class="note">Submissions go into a queue — I'll open the sold listing, verify the price and control type, grab the screenshot, and fold the good ones into the guide on the weekly update. Mislisted sales stay out, same as always.</div>
+
+<div id="thanks" class="note" style="display:none">Queued — thanks! I'll open the listing, verify it, and fold it into the guide if it checks out.</div>
+
+<form id="comp-form" method="POST" action="https://formsubmit.co/ajax/Therealdragginmaster@gmail.com">
+  <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off">
+  <input type="hidden" name="_subject" value="Comp submission">
+  <input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_captcha" value="false">
+
+  <label for="url">Ended eBay auction URL *</label>
+  <input type="url" id="url" name="url" required placeholder="https://www.ebay.com/itm/…" inputmode="url">
+  <div class="hint">Must be a <em>sold/ended</em> listing — active auctions can't be comps yet.</div>
+
+  <label for="brand">Brand / model (your best guess)</label>
+  <input type="text" id="brand" name="brand" placeholder="e.g. Kato SD90/43MAC, UP">
+
+  <label for="price">Price you saw</label>
+  <input type="text" id="price" name="price" inputmode="decimal" placeholder="e.g. 100.00">
+
+  <label for="control">Control type</label>
+  <select id="control" name="control">
+    <option value="unknown">Not sure</option>
+    <option value="DC">DC</option>
+    <option value="DCC-ready">DCC-ready</option>
+    <option value="DCC">DCC</option>
+    <option value="DCC+Sound">DCC + Sound</option>
+  </select>
+
+  <label for="notes">Notes (optional)</label>
+  <textarea id="notes" name="notes" placeholder="Anything worth knowing — condition, box, why it caught your eye…"></textarea>
+
+  <button type="submit">Queue it up</button>
+</form>
+
+<a class="back" href="index.html">← Back to the price guide</a>
+<script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",function(){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  });
+}
+document.getElementById("comp-form").addEventListener("submit",function(e){
+  e.preventDefault();
+  var form=e.target, btn=form.querySelector('button[type="submit"]');
+  btn.disabled=true; btn.textContent="Queueing…";
+  fetch(form.action,{method:"POST",body:new FormData(form),headers:{"Accept":"application/json"}})
+    .then(function(r){ if(!r.ok) throw new Error("send failed"); return r.json(); })
+    .then(function(){
+      form.style.display="none";
+      document.getElementById("thanks").style.display="block";
+    })
+    .catch(function(){
+      btn.disabled=false; btn.textContent="Queue it up";
+      alert("Something went wrong sending that — please try again.");
+    });
+});
+</script>
+</body>
+</html>
