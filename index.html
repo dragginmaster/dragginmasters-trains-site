@@ -95,6 +95,10 @@
   .tmodal .tsales{margin-top:10px;max-height:160px;overflow:auto;font-size:13px;border-top:1px solid var(--line);padding-top:8px;}
   .tmodal .tsales .srow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;}
   .tmodal .tsales .srow .rd{color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tmodal .troads{margin-top:10px;font-size:13px;border-top:1px solid var(--line);padding-top:8px;}
+  .tmodal .troads .rtitle{font-weight:700;margin-bottom:4px;}
+  .tmodal .troads .rrow{display:flex;justify-content:space-between;gap:8px;padding:2px 0;}
+  .tmodal .troads .rrow .n{color:var(--muted);}
   .tmodal .gate{font-size:14px;margin:10px 0;line-height:1.5;}
   .tmodal .tclose{position:absolute;top:8px;right:10px;border:none;background:none;font-size:20px;cursor:pointer;color:var(--muted);padding:4px 8px;}
   /* table */
@@ -228,6 +232,7 @@
       <div class="tchart" id="trendModalChart"></div>
       <div class="tlegend" id="trendModalLegend" hidden></div>
       <div class="tstat" id="trendModalStat"></div>
+      <div class="troads" id="trendModalRoads" hidden></div>
       <div class="tsales" id="trendModalSales"></div>
       <div class="gate" id="trendModalGate" hidden></div>
     </div>
@@ -407,6 +412,14 @@ function canViewTrends(){ return !TRENDS_PAID || checkPaidUser(); }
 /* Trend grouping is by model, not road name: a Santa Fe GP35 and a UP GP35
    are the same item for pricing. Grouping by road name would mean no trend
    ever reaches 5 sales. */
+/* Road name for display grouping: the railroad only, not the unit number or
+   paint note. "BNSF #9779 Executive" -> "BNSF". (Don's rule: the road number
+   belongs in its own column; until that migration, parse it off here.) */
+function roadName(r){
+  if(!r) return "—";
+  var n=r.split("#")[0].split("(")[0].trim();
+  return n||r;
+}
 function trendKey(c){ return c.brand+"|"+c.model+"|"+c.scale+"|"+c.control; }
 function trendName(c){ return c.brand+" "+c.model+" ("+c.control+") — "+c.scale+" scale"; }
 function buildTrendGroups(){
@@ -484,6 +497,7 @@ function openTrendModal(key){
   const chartEl=document.getElementById("trendModalChart");
   const legendEl=document.getElementById("trendModalLegend");
   const statEl=document.getElementById("trendModalStat");
+  const roadEl=document.getElementById("trendModalRoads");
   const salesEl=document.getElementById("trendModalSales");
   const gateEl=document.getElementById("trendModalGate");
   if(canViewTrends()){
@@ -512,6 +526,20 @@ function openTrendModal(key){
     }
     statEl.textContent=rows.length+" sales — avg "+money(avg)+", range "+money(lo)+"–"+money(hi);
     statEl.hidden=false;
+    const byRoad={};
+    rows.forEach(function(r){
+      const nm=roadName(r.road);
+      (byRoad[nm]=byRoad[nm]||[]).push(r.price);
+    });
+    const roadRows=Object.keys(byRoad).map(function(nm){
+      const p=byRoad[nm];
+      return {name:nm, n:p.length, avg:p.reduce(function(a,b){ return a+b; },0)/p.length};
+    }).sort(function(a,b){ return b.n-a.n || b.avg-a.avg; });
+    roadEl.innerHTML='<div class="rtitle">Average by road name</div>'+roadRows.map(function(rr){
+      return '<div class="rrow"><span>'+esc(rr.name)+'</span>'
+        +'<span class="n">'+rr.n+' sale'+(rr.n>1?"s":"")+' · avg '+money(rr.avg)+'</span></div>';
+    }).join("");
+    roadEl.hidden=false;
     salesEl.innerHTML=rows.map(function(r){
       return '<div class="srow"><span>'+esc(fmtDate(r.date))+'</span>'
         +'<span class="rd">'+esc(r.road)+'</span>'
@@ -524,6 +552,7 @@ function openTrendModal(key){
     subEl.hidden=true;
     legendEl.hidden=true;
     statEl.hidden=true;
+    roadEl.hidden=true;
     salesEl.hidden=true;
     gateEl.hidden=false;
     gateEl.innerHTML="Price trends are a <strong>premium feature</strong>. Log in with your paid account to see this chart.";
