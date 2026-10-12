@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /draggin-submit.html
+Sitemap: https://dragginmasterstrains.com/sitemap.xml

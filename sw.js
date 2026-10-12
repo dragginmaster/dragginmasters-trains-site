@@ -4,7 +4,7 @@
    shows with no signal.
    comps.json is NETWORK-FIRST: fresh data whenever there's a connection,
    last-cached copy when offline. */
-const CACHE = "dragginmasters-v8"; // bump on every deploy or installed apps never get the new shell
+const CACHE = "dragginmasters-v9"; // bump on every deploy or installed apps never get the new shell
 const SHELL = [
   "./",
   "index.html",
@@ -12,7 +12,8 @@ const SHELL = [
   "icon-192.png",
   "icon-512.png",
   "draggin-submit.html",
-  "draggin-feedback.html"
+  "draggin-feedback.html",
+  "price-list.html"
 ];
 
 self.addEventListener("install", (e) => {
