@@ -75,6 +75,9 @@ Reference the issue number in the body when there is one (`Closes #12`).
   brand+model+scale+control (road name excluded from the key, shown per dot).
 - Keep the mobile layout working — Don uses the installed PWA on his phone
   at train shows. Test at 390px width.
+- Comp hunting has its own rulebook: `COMPS.md` in the
+  `dragginmasters-comps-data` repo. Read it before any comp work — the
+  validity rules there are Don's directives, no exceptions.
 
 ## Workflow
 
