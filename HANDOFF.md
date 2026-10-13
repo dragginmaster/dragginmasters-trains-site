@@ -4,7 +4,7 @@
 cinder/nscale-price-list — regenerate price-list.html for the 10 new N-scale comps
 
 ## What I did
-- `price-list.html`: regenerated with `python3 build-price-list.py` — now 246 comps / 108 tiers (was 236). New tiers: Kato Big Boy 4-8-8-4 (DC + DCC), Kato E7A A-A Set (DC, factory 106-0440 2-unit set — own tier per Don), Kato SD40-2 (DCC-ready + DCC), Kato C44-9W (DCC+Sound), Atlas SD60 (DCC-ready + DCC+Sound), Atlas S-2 (DCC+Sound), Athearn F59PHI (DCC+Sound).
+- `price-list.html`: regenerated with `python3 build-price-list.py` — now 256 comps / 108 tiers (was 236). New tiers: Kato Big Boy 4-8-8-4 (DC + DCC), Kato E7A A-A Set (DC, factory 106-0440 2-unit set — own tier per Don), Kato SD40-2 (DCC-ready + DCC), Kato C44-9W (DCC+Sound), Atlas SD60 (DCC-ready + DCC+Sound), Atlas S-2 (DCC+Sound), Athearn F59PHI (DCC+Sound).
 - `sw.js`: bumped `CACHE` from `dragginmasters-v11` to `dragginmasters-v12` (mandatory per AGENTS.md).
 - Fixed a stale path: `build-price-list.py` reads `~/workspace/dragginmasters-comps-data/comps.json`, which doesn't exist — added a symlink `~/workspace/dragginmasters-comps-data -> ~/workspace/projects/dragginmasters-comps-data` so the documented command works.
 
@@ -21,5 +21,5 @@ cinder/nscale-price-list — regenerate price-list.html for the 10 new N-scale c
 - Data-repo binary upload needs Don's GitHub sign-in in the browser (one takeover).
 
 ## How to verify
-- `grep -c "Big Boy 4-8-8-4" price-list.html` → 2; page lede says "246 comps".
+- `grep -c "Big Boy 4-8-8-4" price-list.html` → 2; page lede says "256 comps".
 - Preview: `https://cinder-nscale-price-list.dragginmasters-trains.pages.dev/price-list.html` — new tiers listed with sold prices and dates.
