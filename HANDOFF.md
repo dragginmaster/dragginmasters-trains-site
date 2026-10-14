@@ -27,3 +27,38 @@ Thin-tier fills:
 ## Hunt notes
 - 6 already-banked duplicate listings were caught and dropped during the hunt (the browser kept surfacing them); final hunt used a full 310-ID exclusion list, which worked.
 - 2 listings failed final sold-proof verification and were rejected (ended-by-seller, multi-quantity BIN).
+
+---
+
+# HANDOFF.md — Hunt #7
+
+## Branch
+cinder/price-list-325 — regenerate price-list.html for 13 new N-scale comps (hunt #7)
+
+## What I did
+- `price-list.html`: regenerated with `python3 build-price-list.py` — now 325 comps / 141 tiers (was 312/137). OG tags intact (build script emits them).
+- `sw.js`: bumped `CACHE` from `dragginmasters-v18` to `dragginmasters-v19`.
+- Data repo: PR #7 merged — comps.json 312 → 325, plus 13 new proof JPGs under `shots/`.
+
+## The 13 new comps (all proof screenshots personally read)
+New models (first in guide):
+1. Con-Cor U50 DC Used SP #9852 — $142.50, 2026-10-13 (206605880294); runs
+2. Model Power FA2 DC Used Southern #810 — $39.99, 2026-09-29 (820161326352); tested, runs forward and reverse
+3. Life-Like SW1200 DC New GN #16 — $69.00, 2026-10-06 (287610486107); best offer accepted
+New tiers:
+4. Atlas S-4 DCC+Sound New ATSF #1517 — $220.00, 2026-10-13 (117458817346); CONFLICT FLAGGED: title "DCC sound" vs specifics "Analog", banked as DCC+Sound per title
+5. Atlas C424 DCC+Sound New Conrail #2486 — $289.99, 2026-09-24 (158155198477); Phase 1, ex-Erie Lackawanna
+6. Atlas GP30 DCC-ready New PRR #2219 — $150.00, 2026-08-09 (127993528443); Master Line Silver Series, NOS
+7. Atlas H15-44 DCC-ready New FM Demo #1502 — $255.00, 2026-08-02 (287485737789); 14-bid auction
+8. Atlas RS-1 DC New Green Mountain #405 — $114.99, 2026-10-07 (800767720557); tested
+Thin-tier fills:
+9. Atlas U23B DC Used WP #2252 — $77.00, 2026-08-14 (137597120697); runs slow
+10. Bachmann DD40AX DC Used #6926 — $125.00, 2026-08-04 (236966716655); no road name stated
+11. Kato C30-7 DC Used CSX #7012 — $100.00, 2026-10-06 (287620835086); weathered, tested
+12. Kato PA-1 DC Used SP Black Widow — $42.00, 2026-10-06 (198676599432); title lists "Kato | Con Cor", silver paint overspray noted
+13. InterMountain F7 DC Used M&StL #407 — $99.00, 2026-07-18 (236946269840); ANOMALY FLAGGED: no coupler hoses, front coupler needs help; runs and lights
+
+## Hunt notes
+- Bachmann FT target dropped: Bachmann never made an N-scale FT (HO only); replaced with Model Power FA2 + Life-Like SW1200.
+- Kato E8 candidate 307200771495 was already banked (as "Kato E8A"); caught by the dupe check and dropped.
+- Two replacement candidates (GS-4 327391529045, GG1 920033629089) were also already banked — the exclusion list given to the browser was stale; final hunt used a 2-ID focused exclusion and worked.
