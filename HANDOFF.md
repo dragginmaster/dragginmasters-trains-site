@@ -1,52 +1,29 @@
 # HANDOFF.md
 
 ## Branch
-cinder/nscale-price-list-5 — regenerate price-list.html for 24 new N-scale comps (hunt #5)
+cinder/price-list-312 — regenerate price-list.html for 12 new N-scale comps (hunt #6)
 
 ## What I did
-- `price-list.html`: regenerated with `python3 build-price-list.py` — now 300 comps / 132 tiers (was 276/121). OG tags intact (build script emits them).
-- `sw.js`: bumped `CACHE` from `dragginmasters-v16` to `dragginmasters-v17`.
-- Data repo: PR #5 merged — comps.json 276 → 300, plus 24 new + 5 replacement proof JPGs under `shots/`.
+- `price-list.html`: regenerated with `python3 build-price-list.py` — now 312 comps / 137 tiers (was 300/132). OG tags intact (build script emits them).
+- `sw.js`: bumped `CACHE` from `dragginmasters-v17` to `dragginmasters-v18`.
+- Data repo: PR #6 merged — comps.json 300 → 312, plus 12 new + 2 refreshed proof JPGs under `shots/`.
 
-## The 24 new comps (all proof screenshots personally read)
-Wave 1:
-1. Atlas C424 DCC+Sound New Erie Lackawanna #2408 — $208.75, 2026-07-23 (236952144463); Master Gold/LokSound; photo shows #2406, title says #2408
-2. Atlas Dash 8-40B DCC-ready New LMX #8554 — $149.99, 2026-09-26 (147427551416); best offer accepted
-3. Atlas SD60 DCC+Sound New NS GoRail — $150.00, 2026-08-11 (336737087997); listed New (Other), open box
-4. Atlas H15-44 DCC-ready Used Rio Grande #151 — $70.00, 2026-10-10 (198683938978)
-5. Bachmann EMD GP7 DCC Used CNJ #1523 — $100.00, 2026-09-03 (358891815090)
-Wave 2:
-6. Atlas GP-9 DCC-ready New SP #5629 — $100.00, 2026-10-01 (178523408222); listed New (Other)
-7. Bachmann GP38-2 DCC-ready New Milwaukee Road #355 — $52.00, 2026-09-22 (168690862919); 61753, Next18 plug
-8. Atlas GP7 Ph.1 DCC-ready New NYC #5609 — $70.00, 2026-09-22 (147575976754); listed New (Other)
-9. Atlas SD60 DCC-ready New BNSF #1452 — $90.00, 2026-10-13 (178367409187); SD60M, best offer accepted, listed New (Other)
-10. Kato SD40-2 DCC Used AT&SF #5077 — $105.58, 2026-10-03 (336795569436); TSC decoder
-11. Kato SD40-2 DCC-ready New CF&E #3487 — $170.00, 2026-09-05 (287378742651); title "DC / DCC Ready" → DCC-ready
-12. Kato SD45 DCC Used SP #7514 — $97.00, 2026-10-07 (128111713455); TCS decoder, 1 bid
-Wave 3:
-13. Bachmann H16-44 DC Used N&W #147 — $60.00, 2026-09-15 (298677392743); 61455, new model tier
-14. Life-Like GP38-2 DC Used UP — $54.88, 2026-10-03 (860005483377); Proto N 920-75034, new model tier
-15. Fox Valley GP60 DCC Used SP #9726 — $164.95, 2026-09-05 (820087384365); CONFLICT FLAGGED: title "DCC Equipped" vs specifics "Analog", banked as DCC; new model tier
-16. Atlas GP30 DCC-ready New NKP #904 — $78.89, 2026-09-19 (237064732640); CONFLICT FLAGGED: title "DCC Ready" vs specifics "Analog"; new model tier
-17. Atlas RS-1 DC Used Santa Fe #2396 — $29.00, 2026-10-13 (800773417942); 4402, 4 bids, new model tier
-18. Kato SD70M DCC Used UP #4841 — $79.00, 2026-10-12 (168785886036); 176-7506 flared radiators, new model tier
-19. Bachmann GP40 DC Used Santa Fe #3500 — $49.95, 2026-10-05 (287607646855); new model tier
-20. Kato C44-9W DCC+Sound Used SP — $120.00, 2026-08-25 (800499209310); thin tier x2
-21. Atlas/Kato ALCO RS-11 DC Used Maine Central #802 — $119.99, 2026-10-09 (128031705491); 42604, thin tier x2
-22. Bachmann SD45 DCC+Sound Used Rio Grande #5336 — $129.99, 2026-09-26 (800705764983); 66453, best offer accepted; new tier
-23. Atlas (Kato-made) U25B DC Used Conrail #2627 — $46.53, 2026-09-03 (198599287784); Phase IIa, 2 bids, thin tier x2
-24. Bachmann SD45 DCC-ready New UP — $63.99, 2026-07-25 (158113044745); Spectrum 82763, thin tier x2
+## The 12 new comps (all proof screenshots personally read)
+New models:
+1. Atlas U23B DC Used D&H Bicentennial #1776 — $130.00, 2026-10-10 (800780813034)
+2. Kato C30-7 DC Used NS #8050 — $60.00, 2026-10-14 (198708465925); sold the morning it was banked
+3. Bachmann DD40AX DC Used UP "The Centennial" — $110.00, 2026-09-28 (407243968057)
+4. Life-Like GP20 DCC Used UP #474 — $99.95, 2026-10-09 (257767897372); CONFLICT FLAGGED: title "DCC" vs specifics "Analog", banked as DCC per title
+5. Life-Like SW9 DC New ACL #666 — $75.00, 2026-10-11 (227552441420)
+Thin-tier fills:
+6. Atlas GP38-2 DC Used Santa Fe #2370 — $64.00, 2026-09-12 (128071405950); Kato mechanism
+7. Kato F40PH DC Used Amtrak #346 — $75.00, 2026-08-23 (227473154917)
+8. Kato AC4400CW DC Used BNSF #5615 — $79.95, 2026-09-14 (820101401679)
+9. Bachmann GP40 DC Used B&O Chessie #4115 — $29.99, 2026-10-07 (127822510429); ANOMALY FLAGGED: seller-disclosed wear (damaged ladders, missing truck arm/couplers), tested running
+10. Atlas RS-3 DC New D&H #4082 — $65.00, 2026-09-13 (307077961601); New: Other
+11. Atlas VO-1000 DC Used Detroit Terminal #102 — $109.95, 2026-10-10 (820221977104); best offer accepted
+12. Kato Mikado 2-8-2 DC Used Pennsylvania — $107.00, 2026-08-17 (137589622260); USRA Heavy, no road number stated
 
-## Decisions made
-- Atlas C425, Bachmann FA2, InterMountain GP10: no N-scale versions exist — replaced with Atlas GP30, Atlas RS-1, Kato SD70M, Bachmann GP40.
-- Dropped: 3 already-banked duplicates (Bachmann SD45 327294027089, Atlas/Kato U25B 407235668463, + wave-1 GP-9/GP38-2/FA-1), 2 failed-verification listings (Spectrum SD45 298604870829, etc.).
-- Title/specifics control conflicts (Fox Valley GP60, Atlas GP30): banked per title, conflict flagged in note.
-- comps.json (117KB) exceeded GitHub MCP push_files argv limit (~120KB) — pushed via browser upload flow instead.
-
-## What's left
-- Push site branch `cinder/nscale-price-list-5` (approval), open site PR, merge.
-- Verify production shows 300 comps; sync local main; delete local + remote feature branches.
-
-## How to verify
-- comps.json count → 300; `grep -c "300 comps" price-list.html` → 1.
-- Production: https://dragginmasterstrains.com/price-list → guide shows 300 comps after both PRs merge.
+## Hunt notes
+- 6 already-banked duplicate listings were caught and dropped during the hunt (the browser kept surfacing them); final hunt used a full 310-ID exclusion list, which worked.
+- 2 listings failed final sold-proof verification and were rejected (ended-by-seller, multi-quantity BIN).
