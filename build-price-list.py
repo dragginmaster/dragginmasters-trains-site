@@ -54,6 +54,8 @@ th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px;}
 td{padding:8px 10px;border-top:1px solid var(--line);}
 .meta{color:var(--muted);font-size:13px;} a{color:#b3541e;}
 .topnav{margin:10px 0 20px;} .topnav a{margin-right:14px;}
+.ref{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--muted);cursor:pointer;white-space:nowrap;}
+.ref:active{color:var(--navy);}
 .printbtn{font:inherit;font-size:15px;padding:9px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;margin:4px 0 12px;}
 .printbtn:active{transform:translateY(1px);}
 @media print{
@@ -86,10 +88,13 @@ for (brand, model, scale, control) in sorted(tiers):
     parts.append('<div class="tier">\n<h2>%s</h2>' % html.escape(label))
     parts.append('<div><span class="avg">%d sold — average %s, range %s to %s</span></div>'
                  % (len(rows), money(avg), money(min(prices)), money(max(prices))))
-    parts.append('<table><thead><tr><th>Sold date</th><th>Road name</th><th>Price</th></tr></thead><tbody>')
+    parts.append('<table><thead><tr><th>Sold date</th><th>Road name</th><th>Price</th><th>Listing ID</th></tr></thead><tbody>')
     for r in rows:
-        parts.append('<tr><td>%s</td><td>%s</td><td><strong>%s</strong></td></tr>'
-                     % (html.escape(r["date"]), html.escape(r.get("road") or "—"), money(r["price"])))
+        eid = str(r["ebayId"])
+        parts.append('<tr><td>%s</td><td>%s</td><td><strong>%s</strong></td>'
+                     '<td class="ref" title="Tap to copy" onclick="navigator.clipboard.writeText(\'%s\')">%s</td></tr>'
+                     % (html.escape(r["date"]), html.escape(r.get("road") or "—"), money(r["price"]),
+                        html.escape(eid), html.escape(eid)))
     parts.append('</tbody></table></div>')
 
 parts.append("""<p class="meta">Dragginmasters Trains — an independent model train price guide.

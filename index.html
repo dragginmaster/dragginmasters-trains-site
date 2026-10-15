@@ -104,6 +104,7 @@
   .tmodal .tsales{margin-top:10px;max-height:160px;overflow:auto;font-size:13px;border-top:1px solid var(--line);padding-top:8px;}
   .tmodal .tsales .srow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;}
   .tmodal .tsales .srow .rd{color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tmodal .tsales .srow .sid{display:block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:var(--muted);cursor:pointer;}
   .tmodal .troads{margin-top:10px;font-size:13px;border-top:1px solid var(--line);padding-top:8px;}
   .tmodal .troads .rtitle{font-weight:700;margin-bottom:4px;}
   .tmodal .troads .rrow{display:flex;justify-content:space-between;gap:8px;padding:2px 0;}
@@ -550,7 +551,8 @@ function openTrendModal(key){
     }).join("");
     roadEl.hidden=false;
     salesEl.innerHTML=rows.map(function(r){
-      return '<div class="srow"><span>'+esc(fmtDate(r.date))+'</span>'
+      return '<div class="srow"><span>'+esc(fmtDate(r.date))
+        +'<span class="sid" title="Tap to copy" onclick="navigator.clipboard.writeText(\''+esc(String(r.ebayId))+'\')">'+esc(String(r.ebayId))+'</span></span>'
         +'<span class="rd">'+esc(r.road)+'</span>'
         +'<span><strong>'+money(r.price)+'</strong></span></div>';
     }).join("");
