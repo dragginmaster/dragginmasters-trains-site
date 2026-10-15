@@ -4,7 +4,7 @@
    shows with no signal.
    comps.json is NETWORK-FIRST: fresh data whenever there's a connection,
    last-cached copy when offline. */
-const CACHE = "dragginmasters-v22"; // bump on every deploy or installed apps never get the new shell
+const CACHE = "dragginmasters-v23"; // bump on every deploy or installed apps never get the new shell
 const SHELL = [
   "./",
   "index.html",
@@ -33,6 +33,19 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
 
+  // Last-resort fallbacks: respondWith must NEVER resolve undefined —
+  // that surfaces as net::ERR_FAILED. If the cache has nothing, serve a
+  // honest offline page (or empty JSON for the data feed) instead.
+  function offlinePage() {
+    return caches.match("index.html", { ignoreSearch: true }).then((r) =>
+      r || new Response(
+        "<!DOCTYPE html><title>Offline</title><h1>You are offline</h1>" +
+        "<p>Reconnect and reload — the price guide will pick up where it left off.</p>",
+        { status: 503, headers: { "Content-Type": "text/html" } }
+      )
+    );
+  }
+
   // Price data: try the network first so new comps show up without an
   // app update; fall back to the cached copy when offline.
   if (e.request.url.indexOf("comps.json") !== -1) {
@@ -43,7 +56,11 @@ self.addEventListener("fetch", (e) => {
           caches.open(CACHE).then((c) => c.put(e.request, copy));
         }
         return res;
-      }).catch(() => caches.match(e.request, { ignoreSearch: true }))
+      }).catch(() =>
+        caches.match(e.request, { ignoreSearch: true }).then((r) =>
+          r || new Response("[]", { status: 503, headers: { "Content-Type": "application/json" } })
+        )
+      )
     );
     return;
   }
@@ -57,7 +74,7 @@ self.addEventListener("fetch", (e) => {
           caches.open(CACHE).then((c) => c.put(e.request, copy));
         }
         return res;
-      }).catch(() => caches.match("index.html"));
+      }).catch(() => offlinePage());
     })
   );
 });

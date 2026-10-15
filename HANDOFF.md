@@ -1,28 +1,20 @@
 # HANDOFF.md
 
 ## Branch
-feat/comp-ref-ids — Don's call: every comp gets a reference ID (the eBay listing ID) so he and users can point at a specific comp. (Rebased onto main after cinder/price-list-351.)
+fix/sw-never-undefined — harden the service worker's fetch handler + v23.
 
 ## What I did
-- build-price-list.py: new 4th column "Listing ID" (small mono, tap-to-copy via clipboard API). Kept Cinder's OG/Twitter meta-tag emission from hunt #8 — both features live in the builder now.
-- price-list.html: regenerated via build-price-list.py (351 comps, 140 tiers) with both the OG tags and the Listing ID column.
-- index.html: trend modal sale rows now show the listing ID as a small muted second line under the date, tap-to-copy (.sid CSS). Cinder's restored OG/Twitter tags + canonical kept.
-- draggin-feedback.html: optional "Comp listing ID" field, visible only when the feedback kind is "Wrong or missing comp" (tiny show/hide toggle).
-- sw.js: v21 -> v22 (index.html, price-list.html, draggin-feedback.html are all in the SW shell cache).
+- sw.js: both fetch-handler catch paths could resolve `undefined` (cache miss + network failure), which the browser surfaces as net::ERR_FAILED. Now the page fallback serves index.html or an honest offline page, and the comps.json fallback serves an empty JSON array. `respondWith` can never get undefined again.
+- sw.js: CACHE v22 -> v23.
+
+## Why
+Don's phone showed "Webpage not available / net::ERR_FAILED" for price-list.html and draggin-feedback.html (both 308-redirected by Cloudflare) while the homepage loaded. Verified: the pages load fine in a fresh browser profile and in a second browser on his phone — the failure is stale/corrupted SW cache state on his main browser, left over from the v19 -> v10 -> v20 -> v22 churn on 2026-10-15. A fresh v23 install repopulates the cache and its activate step deletes the old caches, so affected browsers self-heal on the next visit — no manual cache clearing needed.
 
 ## What's left
 - Nothing. Merge to main when ready; production auto-deploys on merge.
-
-## Decisions made
-- Used the eBay listing ID as the reference — already unique, permanent, and in comps.json. No second ID system.
-- Price list got a real column; the trend modal got a stacked line under the date (its rows are a 3-part flex with no room for a column).
-- Feedback field only appears for the "comp" kind so the form stays clean for other feedback.
-- price-list.html was conflicted after the rebase (both branches regenerated it) — resolved by regenerating from the merged builder, not by hand-merging HTML.
 
 ## Blockers
 - None.
 
 ## How to verify
-- Preview: https://feat-comp-ref-ids.dragginmasters-trains.pages.dev/price-list.html — Listing ID column present, tap one to copy; view-source shows og:title tags.
-- Preview index.html: open any 5/5 trend, sale rows show IDs under the dates.
-- Preview draggin-feedback.html: pick "Wrong or missing comp" — the listing ID field appears.
+- After merge + deploy, open the site in any browser that showed the error and just visit — the v23 SW installs on navigation and heals the cache. price-list.html and draggin-feedback.html should load.
