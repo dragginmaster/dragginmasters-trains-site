@@ -1,20 +1,18 @@
 # HANDOFF.md
 
 ## Branch
-cinder/nscale-comps-9-site — Hunt #9: push the price guide from 351 to 400 comps.
+regen/drop-pulled-comp — regen after data PR #10 pulled bad comp 298717342120.
 
 ## What I did
-- price-list.html: regenerated via build-price-list.py (400 comps, 181 tiers). OG/Twitter tags present.
-- sw.js: v24 -> v25 (price-list.html changed, it's in the shell cache).
+- Fresh-synced data repo (399 comps, bad comp gone) and site main, then python3 build-price-list.py.
+- price-list.html: 399 comps / 180 tiers; Listing ID column and print button intact.
+- sw.js v25 -> v26 (price-list.html is in the shell cache).
 
 ## What's left
-- Nothing. Merge to main when ready; production auto-deploys on merge.
-
-## Decisions made
-- Data PR #9 (dragginmasters-comps-data) merged first: 49 net-new N-scale comps, plus DCC-ready corrections for 800769438778 (InterMountain SD45-2) and 117413421683 (Atlas C630).
+- Nothing. Merge to main; production auto-deploys.
 
 ## Blockers
 - None.
 
 ## How to verify
-- Production guide should show 400 comps after deploy.
+- price-list.html has 399 rows and no 298717342120.
