@@ -1,20 +1,20 @@
 # HANDOFF.md
 
 ## Branch
-feat/guide-table-ref-id — Don's call: show the eBay listing ID under "View sold listing" in the main guide table (closes #15).
+cinder/nscale-comps-9-site — Hunt #9: push the price guide from 351 to 400 comps.
 
 ## What I did
-- index.html: each "View sold listing ↗" cell now has the listing ID beneath it in small mono type (.lid CSS), tap-to-copy via clipboard API. The guide table is per-comp rows, so one row = one ID, no ambiguity.
-- sw.js: v23 -> v24 (index.html changed, it's in the shell cache).
+- price-list.html: regenerated via build-price-list.py (400 comps, 181 tiers). OG/Twitter tags present.
+- sw.js: v24 -> v25 (price-list.html changed, it's in the shell cache).
 
 ## What's left
 - Nothing. Merge to main when ready; production auto-deploys on merge.
 
 ## Decisions made
-- Placed under the link cell rather than the model-name column: the ID identifies the linked listing, so it sits directly beneath it. Kept the modal sale-row IDs too (harmless, useful in the chart view).
+- Data PR #9 (dragginmasters-comps-data) merged first: 49 net-new N-scale comps, plus DCC-ready corrections for 800769438778 (InterMountain SD45-2) and 117413421683 (Atlas C630).
 
 ## Blockers
 - None.
 
 ## How to verify
-- Preview guide tab: every "View sold listing ↗" has the numeric ID under it; tap copies.
+- Production guide should show 400 comps after deploy.
