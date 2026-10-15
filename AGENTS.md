@@ -87,3 +87,13 @@ Reference the issue number in the body when there is one (`Closes #12`).
 4. Update HANDOFF.md on your branch (what you did / what's left / decisions / blockers).
 5. Push the branch, open a PR, paste the Cloudflare preview URL in the PR.
 6. Merge to `main` only after the preview is reviewed. `main` auto-deploys.
+
+## Gotchas
+- **Rebase before regenerating price-list.html.** The builder reads the data
+  repo and rewrites the whole file — if your branch is behind `main`, or your
+  local data repo is behind `origin/main`, the regen silently reverts other
+  people's comps and the sw.js version. Always `git fetch origin &&
+  git rebase origin/main` (site repo) and `git fetch origin &&
+  git reset --hard origin/main` (data repo) BEFORE running
+  `build-price-list.py`. (Bit us 2026-10-15: a stale branch's merge knocked
+  the live list 325 → 256 comps and regressed sw.js v19 → v10.)
