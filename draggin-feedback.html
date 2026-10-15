@@ -45,6 +45,12 @@
     <option value="other">Something else</option>
   </select>
 
+  <div id="compref-wrap" style="display:none;">
+    <label for="compref">Comp listing ID (optional)</label>
+    <input type="text" id="compref" name="compref" inputmode="numeric" placeholder="e.g. 407165286003">
+    <div class="hint">Only if this is about a specific comp — you'll find its listing ID on the price list page or under the date in the trend details.</div>
+  </div>
+
   <label for="message">Your feedback *</label>
   <textarea id="message" name="message" required placeholder="Lay it on me…"></textarea>
 
@@ -65,6 +71,9 @@ if("serviceWorker" in navigator){
     navigator.serviceWorker.register("sw.js").catch(function(){});
   });
 }
+var kindSel=document.getElementById("kind"), compWrap=document.getElementById("compref-wrap");
+function toggleCompRef(){ compWrap.style.display = kindSel.value==="comp" ? "" : "none"; }
+kindSel.addEventListener("change",toggleCompRef); toggleCompRef();
 document.getElementById("feedback-form").addEventListener("submit",function(e){
   e.preventDefault();
   var form=e.target, btn=form.querySelector('button[type="submit"]');
