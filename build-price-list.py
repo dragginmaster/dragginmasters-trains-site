@@ -33,14 +33,6 @@ parts.append("""<!DOCTYPE html>
 <title>Model Train Sold Prices — Full Price List | Dragginmasters Trains</title>
 <meta name="description" content="Every sold listing in the Dragginmasters Trains model train price guide: real eBay sold prices for N and HO scale locomotives, with dates. %%NCOMPS%% verified comps and counting.">
 <link rel="canonical" href="%%BASE%%/price-list.html">
-<meta property="og:title" content="Model Train Sold Prices — Full Price List | Dragginmasters Trains">
-<meta property="og:description" content="Every sold listing in the Dragginmasters Trains model train price guide: real eBay sold prices for N and HO scale locomotives, with dates. %%NCOMPS%% verified comps and counting.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="%%BASE%%/price-list.html">
-<meta property="og:image" content="%%BASE%%/icon-512.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Model Train Sold Prices — Full Price List | Dragginmasters Trains">
-<meta name="twitter:description" content="Every sold listing in the Dragginmasters Trains model train price guide: real eBay sold prices for N and HO scale locomotives, with dates. %%NCOMPS%% verified comps and counting.">
 <style>
 :root{--navy:#16202e;--green:#2e7d43;--muted:#8a7f68;--line:#e4dcc8;--card:#fffdf6;}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--card);color:var(--navy);margin:0;line-height:1.55;}
@@ -54,10 +46,22 @@ th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px;}
 td{padding:8px 10px;border-top:1px solid var(--line);}
 .meta{color:var(--muted);font-size:13px;} a{color:#b3541e;}
 .topnav{margin:10px 0 20px;} .topnav a{margin-right:14px;}
+.printbtn{font:inherit;font-size:15px;padding:9px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;margin:4px 0 12px;}
+.printbtn:active{transform:translateY(1px);}
+@media print{
+  .topnav,.printbtn{display:none;}
+  body{background:#fff;}
+  .wrap{max-width:none;padding:0;}
+  .tier{break-inside:avoid;border:1px solid #999;}
+  th{background:#eee !important;color:#000;}
+  h1{font-size:20px;}
+  table{font-size:12px;}
+}
 </style>
 </head>
 <body><div class="wrap">
 <div class="topnav"><a href="./">← Back to the price guide</a></div>
+<button class="printbtn" onclick="window.print()">🖨 Print this list</button>
 <h1>Model Train Sold Prices — Complete List</h1>
 <p class="lede">Every verified sold listing behind the <a href="./">Dragginmasters Trains price guide</a>:
 real eBay sold prices for N scale and HO scale model train locomotives, each one checked
