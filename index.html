@@ -113,7 +113,7 @@
   .tmodal .tclose{position:absolute;top:8px;right:10px;border:none;background:none;font-size:20px;cursor:pointer;color:var(--muted);padding:4px 8px;}
   /* table */
   .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff;}
-  table{border-collapse:collapse;width:100%;min-width:880px;font-size:14px;}
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px;}
   thead th{
     background:var(--navy);color:#fff;text-align:left;padding:10px 12px;white-space:nowrap;
     cursor:pointer;user-select:none;font-size:13px;letter-spacing:.3px;
@@ -134,12 +134,7 @@
   a.elink:hover{text-decoration:underline;}
   .lid{display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:var(--muted);cursor:pointer;margin-top:3px;}
   .lid:active{color:var(--navy);}
-  .proof{
-    border:2px dashed #b9ac93;border-radius:6px;background:#f4efe2;color:#8a7f68;
-    font-size:11px;text-align:center;padding:14px 8px;min-width:110px;line-height:1.4;
-  }
-  .proof .glyph{font-size:20px;display:block;margin-bottom:4px;}
-  img.proofimg{max-width:130px;border-radius:6px;border:1px solid var(--line);display:block;}
+  .noshot{color:#a33d1f;font-size:11px;font-weight:700;white-space:nowrap;}
   /* buy page */
   .buy-hero{background:var(--navy2);color:#fff;border-radius:10px;padding:30px 26px;margin-bottom:20px;}
   .buy-hero h1{color:#fff;}
@@ -603,8 +598,7 @@ const COLS=[
   {key:"price", label:"Sold price"},
   {key:"trend", label:"Trend", sort:false},
   {key:"date", label:"Sold date"},
-  {key:"url", label:"eBay link", sort:false},
-  {key:"proof", label:"Proof", sort:false}
+  {key:"links", label:"Listing & proof", sort:false}
 ];
 let sortKey="date", sortDir=-1; // newest first
 let scaleFilter="All", brandFilter="All", controlFilter="All", typeFilter="All", searchQ="";
@@ -657,13 +651,6 @@ function filtered(){
     }
     return true;
   });
-}
-
-function proofPlaceholder(){
-  const pv=document.createElement("div");
-  pv.className="proof";
-  pv.innerHTML='<span class="glyph">◦</span><span>archived screenshot</span>';
-  return pv;
 }
 
 function renderBody(){
@@ -739,29 +726,37 @@ function renderBody(){
     }
     tr.appendChild(tdDate);
 
-    const tdLink=document.createElement("td");
+    const tdLinks=document.createElement("td");
     const a=document.createElement("a");
     a.className="elink"; a.href=c.url; a.target="_blank"; a.rel="noopener";
     a.textContent="View sold listing ↗";
-    tdLink.appendChild(a);
+    tdLinks.appendChild(a);
     const lid=document.createElement("span");
     lid.className="lid"; lid.textContent=c.ebayId; lid.title="Tap to copy listing ID";
     lid.onclick=function(ev){ ev.stopPropagation(); navigator.clipboard.writeText(String(c.ebayId)); };
-    tdLink.appendChild(document.createElement("br"));
-    tdLink.appendChild(lid);
-    tr.appendChild(tdLink);
-
-    const tdProof=document.createElement("td");
-    const img=document.createElement("img");
-    img.className="proofimg";
-    img.src=SHOTS_BASE+c.ebayId+".jpg";
-    img.alt="Sold listing screenshot — tap to enlarge";
-    img.title="Tap to view full-size";
-    img.style.cursor="zoom-in";
-    img.onerror=function(){ this.replaceWith(proofPlaceholder()); };
-    img.onclick=function(){ window.open(this.currentSrc,"_blank","noopener"); };
-    tdProof.appendChild(img);
-    tr.appendChild(tdProof);
+    tdLinks.appendChild(document.createElement("br"));
+    tdLinks.appendChild(lid);
+    /* Proof screenshot: probe the archived shot; show a text link when it
+       exists, a visible "no screenshot" flag when it doesn't (a missing
+       proof must stay obvious — every comp needs link + screenshot). */
+    tdLinks.appendChild(document.createElement("br"));
+    const shotUrl=SHOTS_BASE+c.ebayId+".jpg";
+    const shotSlot=document.createElement("span");
+    tdLinks.appendChild(shotSlot);
+    const probe=new Image();
+    probe.onload=function(){
+      const s=document.createElement("a");
+      s.className="elink"; s.href=shotUrl; s.target="_blank"; s.rel="noopener";
+      s.textContent="Screenshot ↗"; s.title="View full-size screenshot";
+      shotSlot.replaceWith(s);
+    };
+    probe.onerror=function(){
+      const m=document.createElement("span");
+      m.className="noshot"; m.textContent="⚠ no screenshot";
+      shotSlot.replaceWith(m);
+    };
+    probe.src=shotUrl;
+    tr.appendChild(tdLinks);
 
     tb.appendChild(tr);
   });

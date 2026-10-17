@@ -1,20 +1,31 @@
 # HANDOFF.md
 
 ## Branch
-cinder/road-cleanup-site — road-name housekeeping + Notes column.
+dragginmaster/merge-links-column — merge eBay link + Proof columns into one.
 
 ## What I did
-- Data repo: normalized all 432 comp road fields (384 distinct values -> 84).
-  Road column now holds the road name only; road numbers and paint-scheme
-  details moved into notes. 3 comps with undeterminable road names left for
-  Don's review page (168648585326, 236966716655, 398125182899). COMPS.md
-  updated with the road-name-only rule.
-- Site: build-price-list.py now emits a Notes column (was Sold date / Road
-  name / Price / Listing ID). price-list.html regenerated: 432 comps / 195 tiers.
-- sw.js v30 -> v31 (price-list.html is in the shell cache).
+- index.html: merged the "eBay link" and "Proof" table columns into a single
+  "Listing & proof" column (Don's call, 2026-10-17). The column holds:
+  "View sold listing" link, eBay ID (tap-to-copy, as before), and a
+  "Screenshot" text link that opens the full-size archived screenshot in a
+  new tab (same destination the old thumbnail click opened).
+- The old 130px thumbnail column is gone. A missing screenshot now shows a
+  visible red "⚠ no screenshot" flag instead of the dashed placeholder box —
+  a comp without proof must still look wrong at a glance (hard rule).
+- Table min-width 880px -> 760px; the full table should now fit a laptop
+  viewport with no horizontal scroll.
+- Removed dead code: proofPlaceholder(), .proof / img.proofimg CSS.
+- sw.js v31 -> v32 (index.html is in the shell cache).
 
 ## What's left
-- Merge to main; production auto-deploys. Verify live count reads 432.
+- Don reviews the Cloudflare preview; merge to main on his say-so.
+  (Merge = auto-deploy to production.)
+
+## Decisions
+- Screenshot link probes the shot URL with `new Image()` and only renders
+  the link on load; on error it renders the "no screenshot" flag. Same
+  request count as the old thumbnails, no broken-image tabs.
+- Kept the change desktop-safe: mobile only tightens padding, unaffected.
 
 ## Blockers
 - None.
