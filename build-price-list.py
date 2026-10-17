@@ -88,13 +88,14 @@ for (brand, model, scale, control) in sorted(tiers):
     parts.append('<div class="tier">\n<h2>%s</h2>' % html.escape(label))
     parts.append('<div><span class="avg">%d sold — average %s, range %s to %s</span></div>'
                  % (len(rows), money(avg), money(min(prices)), money(max(prices))))
-    parts.append('<table><thead><tr><th>Sold date</th><th>Road name</th><th>Price</th><th>Listing ID</th></tr></thead><tbody>')
+    parts.append('<table><thead><tr><th>Sold date</th><th>Road name</th><th>Price</th><th>Listing ID</th><th>Notes</th></tr></thead><tbody>')
     for r in rows:
         eid = str(r["ebayId"])
         parts.append('<tr><td>%s</td><td>%s</td><td><strong>%s</strong></td>'
-                     '<td class="ref" title="Tap to copy" onclick="navigator.clipboard.writeText(\'%s\')">%s</td></tr>'
+                     '<td class="ref" title="Tap to copy" onclick="navigator.clipboard.writeText(\'%s\')">%s</td>'
+                     '<td class="note">%s</td></tr>'
                      % (html.escape(r["date"]), html.escape(r.get("road") or "—"), money(r["price"]),
-                        html.escape(eid), html.escape(eid)))
+                        html.escape(eid), html.escape(eid), html.escape(r.get("note") or "")))
     parts.append('</tbody></table></div>')
 
 parts.append("""<p class="meta">Dragginmasters Trains — an independent model train price guide.
