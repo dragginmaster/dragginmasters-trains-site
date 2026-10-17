@@ -127,6 +127,9 @@
   .stale{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--red);border:1px solid var(--red);border-radius:4px;padding:2px 7px;margin-top:4px;white-space:nowrap;}
   .price{font-weight:800;white-space:nowrap;}
   .subnote{font-size:12px;color:var(--muted);}
+  .notebtn{font:inherit;font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 8px;margin-top:4px;cursor:pointer;white-space:nowrap;}
+  .notebtn:hover{color:var(--navy);border-color:var(--navy);}
+  .tnote{font-size:14px;line-height:1.55;margin-top:8px;}
   a.elink{color:var(--red);font-weight:600;white-space:nowrap;}
   a.elink:hover{text-decoration:underline;}
   .lid{display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:var(--muted);cursor:pointer;margin-top:3px;}
@@ -247,6 +250,15 @@
       <div class="troads" id="trendModalRoads" hidden></div>
       <div class="tsales" id="trendModalSales"></div>
       <div class="gate" id="trendModalGate" hidden></div>
+    </div>
+  </div>
+
+  <!-- note popup (same pattern as the trend modal) -->
+  <div class="tmodal" id="noteModal" hidden>
+    <div class="box" role="dialog" aria-modal="true" aria-labelledby="noteModalTitle">
+      <button class="tclose" id="noteModalClose" aria-label="Close">✕</button>
+      <h3 id="noteModalTitle">Note</h3>
+      <div class="tnote" id="noteModalBody"></div>
     </div>
   </div>
 
@@ -573,6 +585,12 @@ function openTrendModal(key){
   modal.hidden=false;
 }
 function closeTrendModal(){ document.getElementById("trendModal").hidden=true; }
+function openNoteModal(title,note){
+  document.getElementById("noteModalTitle").textContent=title;
+  document.getElementById("noteModalBody").textContent=note;
+  document.getElementById("noteModal").hidden=false;
+}
+function closeNoteModal(){ document.getElementById("noteModal").hidden=true; }
 
 /* ---------------- Table ---------------- */
 const COLS=[
@@ -677,9 +695,19 @@ function renderBody(){
     });
 
     const tdPrice=document.createElement("td");
-    tdPrice.innerHTML='<span class="price"></span>'+(c.note?'<div class="subnote"></div>':"");
-    tdPrice.querySelector(".price").textContent=money(c.price);
-    if(c.note) tdPrice.querySelector(".subnote").textContent=c.note;
+    const pspan=document.createElement("span");
+    pspan.className="price"; pspan.textContent=money(c.price);
+    tdPrice.appendChild(pspan);
+    if(c.note){
+      tdPrice.appendChild(document.createElement("br"));
+      const nb=document.createElement("button");
+      nb.className="notebtn"; nb.type="button";
+      nb.dataset.note=c.note;
+      nb.dataset.ntitle=c.model+" — "+c.road;
+      nb.title="View note";
+      nb.textContent="note";
+      tdPrice.appendChild(nb);
+    }
     tr.appendChild(tdPrice);
 
     const tdTrend=document.createElement("td");
@@ -813,13 +841,19 @@ function bootGuide(){
   document.getElementById("trendModal").addEventListener("click", function(e){
     if(e.target===this) closeTrendModal();
   });
+  document.getElementById("noteModalClose").addEventListener("click", closeNoteModal);
+  document.getElementById("noteModal").addEventListener("click", function(e){
+    if(e.target===this) closeNoteModal();
+  });
   document.addEventListener("keydown", function(e){
-    if(e.key==="Escape") closeTrendModal();
+    if(e.key==="Escape"){ closeTrendModal(); closeNoteModal(); }
   });
   // trend column buttons are re-rendered with the table, so delegate the clicks
   document.getElementById("bodyRows").addEventListener("click", function(e){
     const b=e.target && e.target.closest ? e.target.closest("button.tfract") : null;
-    if(b && b.dataset.tkey) openTrendModal(b.dataset.tkey);
+    if(b && b.dataset.tkey){ openTrendModal(b.dataset.tkey); return; }
+    const nb=e.target && e.target.closest ? e.target.closest("button.notebtn") : null;
+    if(nb && nb.dataset.note) openNoteModal(nb.dataset.ntitle||"Note", nb.dataset.note);
   });
   // legend rows inside the trend modal switch the chart to that sibling tier
   document.getElementById("trendModalLegend").addEventListener("click", function(e){
