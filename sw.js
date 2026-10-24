@@ -13,7 +13,7 @@
    Therefore:
    - SHELL lists only canonical URLs that serve 200 directly (no redirects);
    - install caches each file individually, so one failure can't sink it. */
-const CACHE = "dragginmasters-v45"; // bump on every deploy or installed apps never get the new shell
+const CACHE = "dragginmasters-v46"; // bump on every deploy or installed apps never get the new shell
 const SHELL = [
   "./",
   "price-list",
