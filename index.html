@@ -100,6 +100,8 @@
   .tmodal .tlegend button.lrow{width:100%;background:none;border:none;font:inherit;color:inherit;cursor:pointer;text-align:left;border-radius:6px;padding:3px 4px;margin:0 -4px;}
   .tmodal .tlegend button.lrow:hover{background:#f0e9d6;}
   .tmodal .tlegend button.lrow:hover span:first-of-type+span{text-decoration:underline;text-underline-offset:3px;}
+  .tmodal .tlegend button.lrow.off{opacity:.6;}
+  .tmodal .tlegend button.lrow.off .dot{opacity:.35;}
   .tmodal .tstat{color:var(--green);font-weight:600;font-size:14px;}
   .tmodal .tsales{margin-top:10px;max-height:160px;overflow:auto;font-size:13px;border-top:1px solid var(--line);padding-top:8px;}
   .tmodal .tsales .srow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;}
@@ -450,8 +452,13 @@ function buildTrendGroups(){
   return groups;
 }
 /* Trend comparison: same model + scale, any brand/control, gets its own line.
-   The tapped tier is always first (green); siblings get the palette below. */
-var TREND_COLORS=["#2e7d43","#1f6feb","#b3541e","#7c3aed","#a07c00","#0e7c7b","#c2185b","#5a6b7c"];
+   The tapped tier is always first (green). The chart shows the tapped tier
+   plus tapped-in comparisons; colors cycle the palette below, and dash
+   patterns cycle in once visible series outnumber colors. */
+var TREND_COLORS=["#2e7d43","#1f6feb","#b3541e","#7c3aed","#a07c00","#0e7c7b","#c2185b","#5a6b7c","#c1272d","#ef6c00","#00acc1","#5e35b1","#795548","#9e9d24"];
+/* Line patterns for when selected series outnumber palette colors:
+   solid, dashed, dotted — a series is always color+pattern unique. */
+var TREND_DASHES=["","6 4","1.5 3"];
 function siblingSeries(key){
   var groups=buildTrendGroups();
   var main=groups[key]||[];
@@ -495,8 +502,10 @@ function trendCompareSVG(series){
       return X(new Date(r.date+"T12:00:00").getTime()).toFixed(1)+","+Y(r.price).toFixed(1);
     }).join(" ");
     if(sr.rows.length>1){
+      var dash=TREND_DASHES[Math.floor(si/TREND_COLORS.length)%TREND_DASHES.length];
+      var dashAttr=dash?' stroke-dasharray="'+dash+'" stroke-linecap="round"':'';
       if(sr.main) s+='<polyline points="'+pts+'" fill="none" stroke="#ffffff" stroke-width="6" opacity="0.9"/>';
-      s+='<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="'+(sr.main?3:2)+'"/>';
+      s+='<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="'+(sr.main?3:2)+'"'+dashAttr+'/>';
     }
     sr.rows.forEach(function(r){
       var cx=X(new Date(r.date+"T12:00:00").getTime()).toFixed(1), cy=Y(r.price).toFixed(1);
@@ -508,6 +517,55 @@ function trendCompareSVG(series){
   s+='<text x="'+(pl-5)+'" y="'+(Y(lo)+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a7f68">'+money(lo)+'</text>';
   s+='</svg>';
   return s;
+}
+/* Trend modal selection: the chart opens with just the tapped tier.
+   Legend rows toggle siblings in and out. Colors follow visible order;
+   dash patterns cycle in once visible series outnumber palette colors. */
+var trendModalSeries=[];
+var trendModalSelected=[];
+function trendVisibleSeries(){
+  return trendModalSeries.filter(function(sr){ return trendModalSelected.indexOf(sr.key)>=0; });
+}
+function trendStyleFor(key){
+  var vis=trendVisibleSeries();
+  var vi=-1;
+  for(var i=0;i<vis.length;i++){ if(vis[i].key===key) vi=i; }
+  if(vi<0) return {col:"#5a6b7c", dash:""};
+  return {col:TREND_COLORS[vi%TREND_COLORS.length],
+    dash:TREND_DASHES[Math.floor(vi/TREND_COLORS.length)%TREND_DASHES.length]};
+}
+function renderTrendVisible(){
+  const chartEl=document.getElementById("trendModalChart");
+  const legendEl=document.getElementById("trendModalLegend");
+  const subEl=document.getElementById("trendModalSub");
+  var vis=trendVisibleSeries();
+  chartEl.innerHTML=trendCompareSVG(vis);
+  if(trendModalSeries.length>1){
+    subEl.textContent = vis.length>1
+      ? "Comparing "+vis.length+" of "+trendModalSeries.length+" tiers — tap a tier to add or remove it."
+      : "Tap a tier below to add it to this chart.";
+    subEl.hidden=false;
+    legendEl.innerHTML=trendModalSeries.map(function(sr){
+      var st=trendStyleFor(sr.key);
+      var on=trendModalSelected.indexOf(sr.key)>=0;
+      var sp=sr.rows.map(function(r){ return r.price; });
+      var savg=sp.reduce(function(a,b){ return a+b; },0)/sp.length;
+      var inner='<span class="dot" style="background:'+st.col+'"></span>'
+        +'<span>'+esc(sr.label)+'</span>'
+        +'<span class="n">'+sr.rows.length+' sale'+(sr.rows.length>1?"s":"")+' · avg '+money(savg)+'</span>';
+      if(sr.main) return '<div class="lrow">'+inner+'<span class="cur">(this chart)</span></div>';
+      return '<button class="lrow lbtn'+(on?'':' off')+'" data-lkey="'+esc(sr.key)+'" title="'+(on?'Remove from chart':'Add to chart')+'">'+inner+'</button>';
+    }).join("");
+    legendEl.hidden=false;
+  }else{
+    subEl.hidden=true;
+    legendEl.hidden=true;
+  }
+}
+function toggleTrendSeries(key){
+  var i=trendModalSelected.indexOf(key);
+  if(i>=0) trendModalSelected.splice(i,1); else trendModalSelected.push(key);
+  renderTrendVisible();
 }
 function openTrendModal(key){
   const series=siblingSeries(key);
@@ -526,26 +584,10 @@ function openTrendModal(key){
     const prices=rows.map(function(r){ return r.price; });
     const avg=prices.reduce(function(a,b){ return a+b; },0)/prices.length;
     const lo=Math.min.apply(null,prices), hi=Math.max.apply(null,prices);
-    chartEl.innerHTML=trendCompareSVG(series);
+    trendModalSeries=series;
+    trendModalSelected=[series[0].key];
+    renderTrendVisible();
     chartEl.hidden=false;
-    if(series.length>1){
-      subEl.textContent="Compared with "+(series.length-1)+" similar tier"+(series.length>2?"s":"")+" — same model and scale.";
-      subEl.hidden=false;
-      legendEl.innerHTML=series.map(function(sr,si){
-        const col=TREND_COLORS[si%TREND_COLORS.length];
-        const sp=sr.rows.map(function(r){ return r.price; });
-        const savg=sp.reduce(function(a,b){ return a+b; },0)/sp.length;
-        const inner='<span class="dot" style="background:'+col+'"></span>'
-          +'<span>'+esc(sr.label)+'</span>'
-          +'<span class="n">'+sr.rows.length+' sale'+(sr.rows.length>1?"s":"")+' · avg '+money(savg)+'</span>';
-        if(sr.main) return '<div class="lrow">'+inner+'<span class="cur">(this chart)</span></div>';
-        return '<button class="lrow lbtn" data-lkey="'+esc(sr.key)+'" title="Switch to this trend">'+inner+'</button>';
-      }).join("");
-      legendEl.hidden=false;
-    }else{
-      subEl.hidden=true;
-      legendEl.hidden=true;
-    }
     statEl.textContent=rows.length+" sales — avg "+money(avg)+", range "+money(lo)+"–"+money(hi);
     statEl.hidden=false;
     const byRoad={};
@@ -853,10 +895,10 @@ function bootGuide(){
     const nb=e.target && e.target.closest ? e.target.closest("button.notebtn") : null;
     if(nb && nb.dataset.note) openNoteModal(nb.dataset.ntitle||"Note", nb.dataset.note);
   });
-  // legend rows inside the trend modal switch the chart to that sibling tier
+  // legend rows inside the trend modal toggle that sibling in/out of the chart
   document.getElementById("trendModalLegend").addEventListener("click", function(e){
     const b=e.target && e.target.closest ? e.target.closest("button.lbtn") : null;
-    if(b && b.dataset.lkey) openTrendModal(b.dataset.lkey);
+    if(b && b.dataset.lkey) toggleTrendSeries(b.dataset.lkey);
   });
 }
 /* Refresh: re-fetch comps.json (network-first through the service worker,
