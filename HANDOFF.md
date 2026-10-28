@@ -1,33 +1,36 @@
 # HANDOFF.md
 
-## Branch
-cinder/stale-rescue-oct25 — price-list regen for the Oct 25 stale-rescue hunt (guide 757 → 759).
+## Main — pushed direct by Cinder on Don's "Push it" (Oct 28)
+Bank-82 publish: the last of the pool-harvest audit set lands on production.
 
 ## What I did
-- Data repo (branch cinder/stale-rescue-oct25, separate PR): banked 2 verified
-  N-scale comps that revive the two tiers due to flip STALE on Oct 25:
-  Atlas C628 DC (ALCO demonstrator #628-3, $108.50, sold Oct 1) and Kato GS-4
-  DCC-ready (Southern Pacific #4449, Kato 126-0301, $265.00, sold Oct 23).
-  Each verified page-by-page on eBay with its proof screenshot read by Cinder
-  before banking. Guide 757 → 759 comps (N 421 → 423, HO unchanged 336).
-- This repo: re-ran build-price-list.py against the updated data repo —
-  price-list.html now carries 759 comps / 424 tiers.
-- sw.js v46 -> v47 (main had advanced past the expected v42; bumped from the
-  actual current version).
-- 3 judgment-call listings were NOT banked; they are on a small audit form
-  for Don's rulings.
+- Data repo (main, direct pushes, no PR — Don's Plan B pattern):
+  - comps.json: banked 82 of the 91 audit-BANK items (commit 6c0aed7).
+    Guide 1,090 -> 1,172 (all HO). Every field page-confirmed from the
+    sold-listing screenshots; road numbers filed under the painted number
+    where title and photo disagreed (notes carry the corrections).
+  - 9 of the 91 were held out of the bank because a required field is not
+    determinable from the page (control: 158298389991, 189033081602,
+    307205956508, 336809030760; condition: 128096322097, 206589022683,
+    227535743764, 297016224739; both: 237113217754). Don ruled all 9
+    TRASH; recorded in handled-ids.json with reasons (commit d9ebb07:
+    banked 416 -> 498, rejected 432 -> 441).
+  - All 82 proof shots uploaded to shots/ on main (4 commits:
+    c8f8c6e, 06eedab, 7f6ad31, d73148c; verified 82/82 present,
+    sizes matching). The full 91 shots also sit on branch
+    cinder/pool-harvest from the morning's upload round.
+- This repo: re-ran build-price-list.py against data main at 1,172 —
+  price-list.html now carries 1,172 comps / 653 tiers.
+- sw.js v64 -> v65.
 
 ## What's left
-- Don reviews the Cloudflare preview; merge to main on his say-so.
-  (Merge = auto-deploy to production.)
-- Don's audit rulings come back via the form; any "Bank it" cards get banked
-  in a follow-up branch.
+- Nothing pending on this publish. Production verification: price-list
+  serves "1172 comps below, updated 2026-10-28".
 
 ## Decisions
-- The GS-4's DCC-ready control rests on the Kato item number 126-0301 in the
-  title and box label (that SKU is the factory decoder-ready version) — the
-  same basis as the tier's existing comp (137550791136, filed by Don's own
-  workflow with the SKU in the note).
-
-## Blockers
-- None.
+- 800730754280 (Genesis SD70M UP): title said "BRAND NEW" but the eBay
+  condition field read Used — filed Used, same call as 198596606064 in
+  the same set; road #4454 restored from the audit checker's box-label
+  read and noted in the comp.
+- Bare seller grades wrapped to guide style: "Used (C-8 Like New)",
+  "Used (C-7 Excellent)", "New (seller grade C-9)".
