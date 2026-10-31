@@ -1,5 +1,30 @@
 # HANDOFF.md
 
+## Main — pushed direct by Cinder (Oct 31, addendum)
+Audit banks from the Oct 30 hunt land: guide 1,322 -> 1,326.
+
+## What I did
+- Don ruled on all 7 audit items Oct 31: 3 trashed (Spectrum
+  4-8-4, P2K E7 control conflict, P2K GP18 "Sold As Is"), 4 banked:
+  - Kato ES44AC N, Canadian Pacific #8705 — banked as Used (fields
+    said New, seller description said used; Don's ruling).
+  - Athearn GP9 Western Maryland #24, GP35 Missouri Pacific #2556,
+    GP35 NMRA 50th Anniversary — the illustrated-lid box counts as
+    "Athearn (blue box)" per Don's ruling; blue-box GP9 and GP35
+    tiers both reach 5.
+- Data repo: comps.json +4 (commit 361ebd6); the 4 proof shots
+  uploaded (commit ec7bcca). All 150 hunt shots also verified on
+  main: shots/ = 1,336 files total.
+- This repo: build-price-list.py re-run at 1,326 comps / 655 tiers.
+- sw.js v66 -> v67.
+- New standing rule from Don (Oct 31): audit-form cards with clear
+  sub-options get one ticker per option ("Bank - Used" / "Bank -
+  New" etc.) instead of a single "Bank it".
+
+## What's left
+- Nothing pending on this publish. Production verification:
+  price-list serves "1326 comps below, updated 2026-10-30".
+
 ## Main — pushed direct by Cinder on Don's "Go" (Oct 31)
 Oct 30 hunt publish: 150 new comps land on production.
 
