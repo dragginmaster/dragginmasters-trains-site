@@ -270,31 +270,12 @@
       <p>No box? No problem. Here's how to pin down the make, model, and manufacturer of a mystery piece.</p>
     </div>
 
-    <h2>Narrow it down — the model finder</h2>
-    <p>Know something already — a brand, a road name, a road number, the scale? Type it in and the list narrows. Every match below is a model that really sold, from the sold-listings database.</p>
-    <div class="filters" id="finderFilters">
-      <div class="seg" id="finderScaleSeg">
-        <button class="active" data-scale="All">All</button>
-        <button data-scale="N">N</button>
-        <button data-scale="HO">HO</button>
-      </div>
-      <select id="finderBrand"><option value="All">All brands</option></select>
-      <select id="finderRoad"><option value="All">All roads</option></select>
-      <select id="finderControl"><option value="All">All control types</option></select>
-      <input type="search" id="finderModel" placeholder="Model — e.g. GP38" list="finderModelList">
-      <datalist id="finderModelList"></datalist>
-      <input type="search" id="finderRoadNo" placeholder="Road number — e.g. 3560">
+    <div class="seg" id="identifySubSeg">
+      <button class="active" data-sub="guide">Step-by-step guide</button>
+      <button data-sub="index">The Model Index</button>
     </div>
-    <div class="count" id="finderCount">Loading the model list…</div>
-    <div id="finderAlert"></div>
-    <div class="tablewrap">
-      <table id="finderTable">
-        <thead><tr><th>Brand</th><th>Model</th><th>Scale</th><th>Roads</th><th>Road #s seen</th><th>Control</th><th>Sold</th><th>Price band</th><th>Evidence</th><th></th></tr></thead>
-        <tbody id="finderRows"></tbody>
-      </table>
-    </div>
-    <div class="note"><strong>What this list is — and isn't.</strong> It covers models that have sold through the guide's pipeline, plus factory lineups where we've verified them. Absence here doesn't prove a model was never made — it only means no sold listing for it has come through yet. Road numbers are what sellers stated; a factory road number is only certain when the catalog says so. If your piece isn't here, work down the steps below — the underside usually settles it.</div>
 
+    <div id="identifyGuide">
     <h2>1. Photograph it — including the bottom</h2>
     <p>Top, both sides, and the underside. You'll need the bottom shot. That's where the answer usually lives.</p>
 
@@ -337,6 +318,34 @@
     <p>Search the road name plus the road number plus the wheel arrangement — e.g. "Santa Fe 2341 4-axle diesel N scale." Road numbers are often specific enough to nail it.</p>
 
     <div class="note"><strong>Why this matters for value:</strong> the manufacturer sets the tier — a Kato F7 and a Model Power F7 are different money. Once you've got the make, look it up in the Price Guide tab.</div>
+    </div>
+
+    <div id="identifyIndex" style="display:none">
+    <h2>The Model Index</h2>
+    <p>Know something already — a brand, a road name, a road number, the scale? Type it in and the list narrows. Every row tells you what the evidence is: a verified sale, a catalog lineup, or a listing we've seen.</p>
+    <div class="filters" id="finderFilters">
+      <div class="seg" id="finderScaleSeg">
+        <button class="active" data-scale="All">All</button>
+        <button data-scale="N">N</button>
+        <button data-scale="HO">HO</button>
+      </div>
+      <select id="finderBrand"><option value="All">All brands</option></select>
+      <select id="finderRoad"><option value="All">All roads</option></select>
+      <select id="finderControl"><option value="All">All control types</option></select>
+      <input type="search" id="finderModel" placeholder="Model — e.g. GP38" list="finderModelList">
+      <datalist id="finderModelList"></datalist>
+      <input type="search" id="finderRoadNo" placeholder="Road number — e.g. 3560">
+    </div>
+    <div class="count" id="finderCount">Loading the model list…</div>
+    <div id="finderAlert"></div>
+    <div class="tablewrap">
+      <table id="finderTable">
+        <thead><tr><th>Brand</th><th>Model</th><th>Scale</th><th>Roads</th><th>Road #s seen</th><th>Control</th><th>Sold</th><th>Price band</th><th>Evidence</th><th></th></tr></thead>
+        <tbody id="finderRows"></tbody>
+      </table>
+    </div>
+    <div class="note"><strong>What this list is — and isn't.</strong> It covers models that have sold through the guide's pipeline, plus factory lineups where we've verified them. Absence here doesn't prove a model was never made — it only means no sold listing for it has come through yet. Road numbers are what sellers stated; a factory road number is only certain when the catalog says so. If your piece isn't here, switch to the step-by-step guide — the underside usually settles it.</div>
+    </div>
   </section>
 
   <section class="page" id="page-sell">
@@ -428,6 +437,14 @@ function goTab(name){
   document.querySelectorAll("section.page").forEach(s=>s.classList.toggle("active", s.id==="page-"+name));
   window.scrollTo({top:0, behavior:"smooth"});
 }
+function goIdentifySub(name){
+  document.querySelectorAll("#identifySubSeg button").forEach(b=>b.classList.toggle("active", b.dataset.sub===name));
+  document.getElementById("identifyGuide").style.display = name==="guide" ? "" : "none";
+  document.getElementById("identifyIndex").style.display = name==="index" ? "" : "none";
+}
+document.querySelectorAll("#identifySubSeg button").forEach(btn=>{
+  btn.addEventListener("click",()=>goIdentifySub(btn.dataset.sub));
+});
 
 /* ---------------- Helpers ---------------- */
 const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -969,7 +986,7 @@ loadComps(false);
 })();
 </script>
 <script>
-/* ---------------- Model finder (Identify tab) ----------------
+/* ---------------- The Model Index (Identify tab sub-tab) ----------------
    Narrows the reference list by what the visitor already knows:
    scale, brand, model, road, road number, control type. Data loads
    from reference.json in the data repo (same pattern as comps.json).
