@@ -270,6 +270,12 @@
       <p>No box? No problem. Here's how to pin down the make, model, and manufacturer of a mystery piece.</p>
     </div>
 
+    <div class="seg" id="identifySubSeg">
+      <button class="active" data-sub="guide">Step-by-step guide</button>
+      <button data-sub="index">The Model Index</button>
+    </div>
+
+    <div id="identifyGuide">
     <h2>1. Photograph it — including the bottom</h2>
     <p>Top, both sides, and the underside. You'll need the bottom shot. That's where the answer usually lives.</p>
 
@@ -312,6 +318,34 @@
     <p>Search the road name plus the road number plus the wheel arrangement — e.g. "Santa Fe 2341 4-axle diesel N scale." Road numbers are often specific enough to nail it.</p>
 
     <div class="note"><strong>Why this matters for value:</strong> the manufacturer sets the tier — a Kato F7 and a Model Power F7 are different money. Once you've got the make, look it up in the Price Guide tab.</div>
+    </div>
+
+    <div id="identifyIndex" style="display:none">
+    <h2>The Model Index</h2>
+    <p>Know something already — a brand, a road name, a road number, the scale? Type it in and the list narrows. Every row tells you what the evidence is: a verified sale, a catalog lineup, or a listing we've seen.</p>
+    <div class="filters" id="finderFilters">
+      <div class="seg" id="finderScaleSeg">
+        <button class="active" data-scale="All">All</button>
+        <button data-scale="N">N</button>
+        <button data-scale="HO">HO</button>
+      </div>
+      <select id="finderBrand"><option value="All">All brands</option></select>
+      <select id="finderRoad"><option value="All">All roads</option></select>
+      <select id="finderControl"><option value="All">All control types</option></select>
+      <input type="search" id="finderModel" placeholder="Model — e.g. GP38" list="finderModelList">
+      <datalist id="finderModelList"></datalist>
+      <input type="search" id="finderRoadNo" placeholder="Road number — e.g. 3560">
+    </div>
+    <div class="count" id="finderCount">Loading the model list…</div>
+    <div id="finderAlert"></div>
+    <div class="tablewrap">
+      <table id="finderTable">
+        <thead><tr><th>Brand</th><th>Model</th><th>Scale</th><th>Roads</th><th>Road #s seen</th><th>Control</th><th>Sold</th><th>Price band</th><th>Evidence</th><th></th></tr></thead>
+        <tbody id="finderRows"></tbody>
+      </table>
+    </div>
+    <div class="note"><strong>What this list is — and isn't.</strong> It covers models that have sold through the guide's pipeline, plus factory lineups where we've verified them. Absence here doesn't prove a model was never made — it only means no sold listing for it has come through yet. Road numbers are what sellers stated; a factory road number is only certain when the catalog says so. If your piece isn't here, switch to the step-by-step guide — the underside usually settles it.</div>
+    </div>
   </section>
 
   <section class="page" id="page-sell">
@@ -403,6 +437,14 @@ function goTab(name){
   document.querySelectorAll("section.page").forEach(s=>s.classList.toggle("active", s.id==="page-"+name));
   window.scrollTo({top:0, behavior:"smooth"});
 }
+function goIdentifySub(name){
+  document.querySelectorAll("#identifySubSeg button").forEach(b=>b.classList.toggle("active", b.dataset.sub===name));
+  document.getElementById("identifyGuide").style.display = name==="guide" ? "" : "none";
+  document.getElementById("identifyIndex").style.display = name==="index" ? "" : "none";
+}
+document.querySelectorAll("#identifySubSeg button").forEach(btn=>{
+  btn.addEventListener("click",()=>goIdentifySub(btn.dataset.sub));
+});
 
 /* ---------------- Helpers ---------------- */
 const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -942,6 +984,193 @@ loadComps(false);
     if(!document.hidden && Date.now()-lastLoadAt>30*60*1000) loadComps(true);
   });
 })();
+</script>
+<script>
+/* ---------------- The Model Index (Identify tab sub-tab) ----------------
+   Narrows the reference list by what the visitor already knows:
+   scale, brand, model, road, road number, control type. Data loads
+   from reference.json in the data repo (same pattern as comps.json).
+   Verified negatives are flagged, not silently omitted: if the brand
+   + model combo is one a maker never built, say so plainly. */
+var REF_URL = "https://raw.githubusercontent.com/dragginmaster/dragginmasters-comps-data/main/reference.json";
+var REF_ROWS = [], REF_NEG = [], REF_SHARES = [];
+var fScale = "All", fBrand = "All", fRoad = "All", fControl = "All", fModel = "", fRoadNo = "";
+
+function finderFiltered(){
+  var m = fModel.trim().toLowerCase(), rn = fRoadNo.trim();
+  return REF_ROWS.filter(function(r){
+    if(fScale !== "All" && r.scale !== fScale) return false;
+    if(fBrand !== "All" && r.brand !== fBrand) return false;
+    if(fRoad !== "All" && r.roads.indexOf(fRoad) === -1) return false;
+    if(fControl !== "All" && r.controls.indexOf(fControl) === -1) return false;
+    if(m && r.model.toLowerCase().indexOf(m) === -1) return false;
+    if(rn && r.road_numbers.indexOf(rn) === -1) return false;
+    return true;
+  });
+}
+
+function finderOptions(sel, values, allLabel){
+  var cur = sel.value;
+  sel.innerHTML = "";
+  var o0 = document.createElement("option");
+  o0.value = "All"; o0.textContent = allLabel;
+  sel.appendChild(o0);
+  values.forEach(function(v){
+    var o = document.createElement("option");
+    o.value = v; o.textContent = v;
+    sel.appendChild(o);
+  });
+  if(values.indexOf(cur) !== -1) sel.value = cur;
+}
+
+function renderFinder(){
+  var rows = finderFiltered();
+  var tb = document.getElementById("finderRows");
+  tb.innerHTML = "";
+  rows.slice(0, 200).forEach(function(r){
+    var tr = document.createElement("tr");
+    [r.brand, r.model, r.scale].forEach(function(v){
+      var td = document.createElement("td");
+      td.textContent = v;
+      tr.appendChild(td);
+    });
+    var tdRoads = document.createElement("td");
+    tdRoads.textContent = r.roads.join(", ") || "—";
+    tr.appendChild(tdRoads);
+    var tdNums = document.createElement("td");
+    tdNums.textContent = r.road_numbers.length ? "#" + r.road_numbers.join(", #") : "—";
+    tr.appendChild(tdNums);
+    var tdCtrl = document.createElement("td");
+    tdCtrl.textContent = r.controls.join(", ") || "—";
+    tr.appendChild(tdCtrl);
+    var tdSold = document.createElement("td");
+    tdSold.textContent = r.comps;
+    tr.appendChild(tdSold);
+    var tdPrice = document.createElement("td");
+    tdPrice.textContent = r.price_min === null || r.price_min === undefined ? "—"
+      : r.comps === 1 ? money(r.price_min)
+      : money(r.price_min) + "–" + money(r.price_max) + " (med " + money(r.price_median) + ")";
+    tr.appendChild(tdPrice);
+    var tdEv = document.createElement("td");
+    tdEv.textContent = r.evidence === "guide" ? "Verified sale"
+      : r.evidence === "catalog" ? "Catalog"
+      : "Listed only";
+    tdEv.title = r.evidence === "guide" ? "Backed by verified sold listings"
+      : r.evidence === "catalog" ? "From a catalog or manufacturer lineup — no sold price yet"
+      : "Seen in a listing or queue — not a verified sale, no price evidence";
+    tr.appendChild(tdEv);
+    var tdGo = document.createElement("td");
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "notebtn"; btn.textContent = "Guide →";
+    btn.title = "See sold listings for this model in the Price Guide";
+    btn.addEventListener("click", function(){ goGuideFor(r.brand, r.model); });
+    tdGo.appendChild(btn);
+    tr.appendChild(tdGo);
+    tb.appendChild(tr);
+  });
+  var n = rows.length;
+  document.getElementById("finderCount").textContent =
+    n === 0 ? "No matches — try fewer filters, or work down the steps below."
+    : n + (n === 1 ? " match" : " matches") + (n > 200 ? " (showing first 200)" : "")
+      + " · " + REF_ROWS.length + " brand-model combinations in the list.";
+  renderFinderAlert(rows);
+}
+
+function renderFinderAlert(rows){
+  var box = document.getElementById("finderAlert");
+  box.innerHTML = "";
+  var msgs = [];
+  /* Verified negatives: brand + model the maker never built. */
+  if(fModel.trim()){
+    var m = fModel.trim().toLowerCase();
+    REF_NEG.forEach(function(neg){
+      if(neg.model.toLowerCase() === m && (fBrand === "All" || neg.brand === fBrand)){
+        msgs.push("Heads up: <strong>" + esc(neg.brand) + " never made a " + esc(neg.model) + "</strong> — "
+          + esc(neg.claim) + ". Check the model again, or check the underside for the real maker.");
+      }
+    });
+  }
+  /* Tooling shares among the visible results: same shell, different maker. */
+  var seenModels = {};
+  rows.forEach(function(r){ seenModels[r.model] = true; });
+  var tells = [];
+  REF_SHARES.forEach(function(s){
+    var parts = s.model.split(" / ");
+    if(parts.some(function(p){ return seenModels[p]; }) && tells.indexOf(s.tell) === -1){
+      tells.push(s.tell);
+    }
+  });
+  tells.slice(0, 2).forEach(function(t){
+    msgs.push("<strong>Same tooling, different maker:</strong> " + esc(t));
+  });
+  msgs.forEach(function(html){
+    var d = document.createElement("div");
+    d.className = "note"; d.style.margin = "0 0 12px";
+    d.innerHTML = html;
+    box.appendChild(d);
+  });
+}
+
+/* Jump from a finder row to the Price Guide, pre-filtered to that model. */
+function goGuideFor(brand, model){
+  scaleFilter = "All"; brandFilter = "All"; controlFilter = "All"; typeFilter = "All";
+  searchQ = model;
+  var bsel = document.getElementById("brandFilter");
+  if(bsel && Array.prototype.some.call(bsel.options, function(o){ return o.value === brand; })){
+    brandFilter = brand;
+  }
+  refreshFilterOptions();
+  renderBody();
+  document.getElementById("searchBox").value = model;
+  document.querySelectorAll("#scaleSeg button").forEach(function(b){
+    b.classList.toggle("active", b.dataset.scale === "All");
+  });
+  goTab("guide");
+}
+
+function bootFinder(){
+  document.querySelectorAll("#finderScaleSeg button").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll("#finderScaleSeg button").forEach(function(x){ x.classList.remove("active"); });
+      b.classList.add("active");
+      fScale = b.dataset.scale; renderFinder();
+    });
+  });
+  document.getElementById("finderBrand").addEventListener("change", function(e){ fBrand = e.target.value; renderFinder(); });
+  document.getElementById("finderRoad").addEventListener("change", function(e){ fRoad = e.target.value; renderFinder(); });
+  document.getElementById("finderControl").addEventListener("change", function(e){ fControl = e.target.value; renderFinder(); });
+  document.getElementById("finderModel").addEventListener("input", function(e){ fModel = e.target.value; renderFinder(); });
+  document.getElementById("finderRoadNo").addEventListener("input", function(e){ fRoadNo = e.target.value; renderFinder(); });
+  fetch(REF_URL, {cache: "reload"})
+    .then(function(r){ if(!r.ok) throw new Error("http " + r.status); return r.json(); })
+    .then(function(d){
+      REF_ROWS = d.rows || [];
+      REF_NEG = d.negatives || [];
+      REF_SHARES = d.shares || [];
+      var brands = [], roads = [], ctrls = [], models = [];
+      REF_ROWS.forEach(function(r){
+        if(brands.indexOf(r.brand) === -1) brands.push(r.brand);
+        r.roads.forEach(function(x){ if(roads.indexOf(x) === -1) roads.push(x); });
+        r.controls.forEach(function(x){ if(ctrls.indexOf(x) === -1) ctrls.push(x); });
+        if(models.indexOf(r.model) === -1) models.push(r.model);
+      });
+      brands.sort(); roads.sort(); ctrls.sort(); models.sort();
+      finderOptions(document.getElementById("finderBrand"), brands, "All brands");
+      finderOptions(document.getElementById("finderRoad"), roads, "All roads");
+      finderOptions(document.getElementById("finderControl"), ctrls, "All control types");
+      var dl = document.getElementById("finderModelList");
+      models.forEach(function(m){
+        var o = document.createElement("option");
+        o.value = m; dl.appendChild(o);
+      });
+      renderFinder();
+    })
+    .catch(function(){
+      document.getElementById("finderCount").textContent =
+        "Couldn't load the model list — check your connection and reload. (The steps below still work without it.)";
+    });
+}
+bootFinder();
 </script>
 <script>
 /* Share button: native share sheet where available, clipboard fallback. */
